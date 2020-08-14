@@ -115,9 +115,7 @@ let str expected =
 
 ```fsharp
 run (str "parsec") "parsec"
-// Success { Value = "parsec"
-//           Context = { Text = "parsec"
-//                       Index = 6 } }
+// Success: parsec
 ```
 
 ---
@@ -126,9 +124,7 @@ run (str "parsec") "parsec"
 
 ```fsharp
 run (str "parser combinators are awesome") "parser combinators are awesome"
-// Success { Value = "parser combinators are awesome"
-//           Context = { Text = "parser combinators are awesome"
-//                       Index = 30 } }
+// Success: parser combinators are awesome
 ```
 
 ---
@@ -137,9 +133,9 @@ run (str "parser combinators are awesome") "parser combinators are awesome"
 
 ```fsharp
 run (str "parser combinators are awesome") "parser combinator are awesome"
-// Failure { Expected = "parser combinators are awesome"
-//           Context = { Text = "parser combinator are awesome"
-//                       Index = 0 } }
+// Failure: Expecting parser combinators are awesome
+// parser combinator are awesome
+// ^
 ```
 
 ---
@@ -176,9 +172,7 @@ let together =
 
 ```fsharp
 run together "parser combinators are awesome"
-// Success { Value = "awesome"
-//           Context = { Text = "parser combinators are awesome"
-//                       Index = 30 } }
+// Success: awesome
 ```
 
 ---
@@ -187,9 +181,9 @@ run together "parser combinators are awesome"
 
 ```fsharp
 run together "parser combinator are awesome"
-// Failure { Expected = "combinators"
-//           Context = { Text = "parser combinator are awesome"
-//                       Index = 7 } }
+// Failure: Expecting combinators
+// parser combinator are awesome
+//        ^
 ```
 
 ---
@@ -208,9 +202,7 @@ The four bases:
 
 ```fsharp
 run (str "a") "a"
-// Success { Value = "a"
-//           Context = { Text = "a"
-//                       Index = 1 } }
+// Success: a
 ```
 
 ---
@@ -242,9 +234,7 @@ let (<|>) parserA parserB =
 
 ```fsharp
 run (str "a" <|> str "t" <|> str "c" <|> str "g") "g"
-// Success { Value = "g"
-//           Context = { Text = "g"
-//                       Index = 1 } }
+// Success: g
 ```
 
 ---
@@ -325,9 +315,7 @@ let many parser =
 
 ```fsharp
 run (many molecule) "agtgcgttac"
-// Success { Value = [A; G; T; G; C; G; T; T; A; C]
-//           Context = { Text = "agtgcgttac"
-//                       Index = 10 } }
+// Success: [A; G; T; G; C; G; T; T; A; C]
 ```
 
 ---
@@ -358,9 +346,7 @@ let brown = t >>. a >>. a >>. a >>. t >>. g |>> fun _ -> Brown
 
 ```fsharp
 run (blue <|> brown) "taagtg"
-// Success { Value = Blue
-//           Context = { Text = "taagtg"
-//                       Index = 6 } }
+// Success: Blue
 ```
 
 ---
@@ -369,9 +355,9 @@ run (blue <|> brown) "taagtg"
 
 ```fsharp
 run (blue <|> brown) "taaatg"
-// Failure { Expected = "g"
-//           Context = { Text = "taaatg"
-//                       Index = 3 } }
+// Failure: Expecting g
+// taaatg
+//    ^
 ```
 
 ---
@@ -393,9 +379,7 @@ let attempt parser =
 
 ```fsharp
 run (attempt blue <|> brown) "taaatg"
-Success { Value = Brown
-          Context = { Text = "taaatg"
-                      Index = 6 } }
+// Success: Brown
 ```
 
 ---
@@ -420,10 +404,9 @@ let (<?>) parser expected =
 let blue = blue <?> "In the middle of parsing Blue"
 let brown = brown <?> "In the middle of parsing Blue"
 run (blue <|> brown) "taaatg"
-
-// Failure { Expected = "In the middle of parsing Blue"
-//           Context = { Text = "taaatg"
-//                       Index = 3 } }
+// Failure: In the middle of parsing Blue
+// taaatg
+//    ^
 ```
 
 ---
@@ -517,10 +500,7 @@ let parseParens =
 
 ```fsharp
 run Empty (many parseParens >>. getState) "((()))()())))))((("
-// Success { Value = Paren -2
-//           Context = { State = Paren -2
-//                       Text = "((()))()())))))((("
-//                       Index = 18 } }
+// Success: Paren -2
 ```
 
 ---
@@ -548,10 +528,10 @@ let stateSatisfies f =
 
 ```fsharp
 run Empty (many parseParens >>. stateSatisfies isEmpty) "((()))()())))))((("
-// Failure { Expected = "User state mismatch"
-//           Context = { State = Paren -2
-//                       Text = "((()))()())))))((("
-//                       Index = 18 } }
+// Failure: Expecting User state mismatch
+// State = Paren -2
+// ((()))()())))))(((
+//                   ^
 ```
 
 ---
@@ -560,10 +540,7 @@ run Empty (many parseParens >>. stateSatisfies isEmpty) "((()))()())))))((("
 
 ```fsharp
 run Empty (many parseParens >>. stateSatisfies isEmpty) "((()))()())))))((((("
-// Success { Value = ()
-//           Context = { State = Paren 0
-//                       Text = "((()))()())))))((((("
-//                       Index = 20 } }
+// Success: ()
 ```
 
 ---
@@ -595,8 +572,28 @@ let anyOf chars =
             }
 )
 
+let many1 parser =
+    let rec loop parser acc =
+        (fun ctx ->
+            match parser ctx with
+            | Success success -> 
+                loop parser (success.Value :: acc) success.Context
+            | Failure failure -> 
+                if failure.Context.Index <> ctx.Index then
+                    Failure failure
+                elif List.isEmpty acc then
+                    Failure failure
+                else
+                    Success {
+                        Value = List.rev acc
+                        Context = failure.Context
+                    }
+        )
+    loop parser []
+
+
 let parseInt = 
-    many (anyOf "1234567890")
+    many1 (anyOf "1234567890")
     |>> (fun numbers ->
         int(String(Array.ofList(numbers)))
     )
@@ -647,9 +644,7 @@ let sepBy parser parserSep =
 
 ```fsharp
 run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1,2,3]"
-// Success { Value = [1; 2; 3]
-//           Context = { Text = "[1,2,3]"
-//                       Index = 7 } }
+// Success: [1; 2; 3]
 ```
 
 ---
@@ -658,9 +653,9 @@ run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1,2,3]"
 
 ```fsharp
 run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1, 2, 3]"
-// Failure { Expected = "Any of these: '1234567890'"
-//           Context = { Text = "[1, 2, 3]"
-//                       Index = 3 } }
+// Failure: Expecting Any of these: '1234567890'
+// [1, 2, 3]
+//    ^
 ```
 
 ---
@@ -669,9 +664,7 @@ run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1, 2, 3]"
 
 ```fsharp
 run (between (str "[" >>. ws) (str "]" >>. ws) (sepBy (parseInt .>> ws) (str "," >>. ws))) "[ 1,2, 3 ]"
-// Success { Value = [1; 2; 3]
-//           Context = { Text = "[ 1,2, 3 ]"
-//                       Index = 10 } }
+// Success: [1; 2; 3]
 ```
 
 ---

@@ -40,9 +40,20 @@ module NoState =
                 }
         )
 
+    let print result =
+        match result with
+        | Success success -> sprintf "Success: %A" success.Value
+        | Failure failure ->
+            let output = sprintf "Failure: Expecting %s\n" failure.Expected
+            let output = output + failure.Context.Text + "\n"
+            let before = String.init failure.Context.Index (fun _ -> " ")
+            let output = output + before + "^"
+            output
+
     let run parser text =
         let ctx = { Text = text; Index = 0 }
         parser ctx 
+        |> print
 
     let test1 () =
         run (str "parsec") "parsec"
@@ -324,9 +335,21 @@ module State =
                 }
         )
 
+    let print result =
+        match result with
+        | Success success -> sprintf "Success: %O" success.Value
+        | Failure failure ->
+            let output = sprintf "Failure: Expecting %s\n" failure.Expected
+            let output = output + sprintf "State = %O\n" failure.Context.State
+            let output = output + failure.Context.Text + "\n"
+            let before = String.init failure.Context.Index (fun _ -> " ")
+            let output = output + before + "^\n"
+            output
+
     let run init parser text =
         let ctx = { State = init; Text = text; Index = 0 }
         parser ctx 
+        |> print
 
     let (>>.) parserA parserB =
         (fun ctx ->
