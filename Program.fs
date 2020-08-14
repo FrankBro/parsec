@@ -1,270 +1,471 @@
-﻿open System
+﻿module Parsec 
 
-type Context<'state> = {
-    State: 'state
-    Text: string
-    Index: int
-}
+open System
 
-type Success<'value, 'state> = {
-    Value: 'value
-    Context: Context<'state>
-}
+module NoState =
+    type Context = {
+        Text: string
+        Index: int
+    }
 
-type Failure<'state> = {
-    Expected: string
-    Context: Context<'state>
-}
+    type Success<'value> = {
+        Value: 'value
+        Context: Context
+    }
 
-type Result<'value, 'state> =
-    | Success of Success<'value, 'state>
-    | Failure of Failure<'state>
+    type Failure = {
+        Expected: string
+        Context: Context
+    }
 
-type Parser<'value, 'state> = (Context<'state> -> Result<'value, 'state>)
+    type Result<'value> =
+        | Success of Success<'value>
+        | Failure of Failure
 
-let str (expected: string) =
-    (fun ctx ->
-        let length = String.length expected
-        if ctx.Index + length > String.length ctx.Text then
-            Failure {
-                Expected = "eof"
-                Context = ctx
-            }
-        elif ctx.Text.Substring(ctx.Index, length) = expected then
-            Success {
-                Value = expected
-                Context = { ctx with Index = ctx.Index + length }
-            }
-        else
-            Failure {
-                Expected = expected
-                Context = ctx
-            }
-    )
+    type Parser<'value> = (Context -> Result<'value>)
 
-let run init (p: Parser<'t, 'state>) input =
-    let ctx = { State = init; Text = input; Index = 0 }
-    match p ctx with
-    | Success success -> success.Value
-    | Failure failure -> failwithf "Parser failed: expecting '%s'. From '%s'" failure.Expected failure.Context.Text.[failure.Context.Index..]
-
-let (>>.) (pa: Parser<'a, 's>) (pb: Parser<'b, 's>) : Parser<'b, 's> =
-    (fun ctx ->
-        let a = pa ctx
-        match a with
-        | Success success -> pb success.Context
-        | Failure failure -> Failure failure
-    )
-
-let (.>>) (pa: Parser<'a, 's>) (pb: Parser<'b, 's>) : Parser<'a, 's> =
-    (fun ctx ->
-        match pa ctx with
-        | Success asuccess -> 
-            match pb asuccess.Context with
-            | Success bsuccess -> Success { Value = asuccess.Value; Context = bsuccess.Context }
-            | Failure failure -> Failure failure
-        | Failure failure -> Failure failure
-    )
-
-let (.>>.) pa pb =
-    (fun ctx ->
-        match pa ctx with
-        | Success a ->
-            match pb a.Context with
-            | Success b -> Success { Value = (a.Value, b.Value); Context = b.Context }
-            | Failure failure -> Failure failure
-        | Failure failure -> Failure failure
-    )
-
-let anyOf (chars: seq<Char>) =
-    (fun ctx ->
-        let char = ctx.Text.[ctx.Index]
-        match Seq.tryFind (fun c -> c = char) chars with
-        | Some found ->
-            Success {
-                Value = found
-                Context = { ctx with Index = ctx.Index + 1 }
-            }
-        | None ->
-            Failure {
-                Expected = sprintf "Any of these: '%O'" chars
-                Context = ctx
-            }
-    )
-
-let many (p: Parser<'a, 's>) : Parser<'a list, 's> =
-    let rec loop (p: Parser<'a, 's>) (acc: 'a list) : Parser<'a list, 's> =
+    let str expected =
         (fun ctx ->
-            match p ctx with
-            | Success success -> loop p (success.Value :: acc) success.Context
-            | Failure failure -> 
-                if failure.Context.Index <> ctx.Index then
-                    Failure failure
-                else
-                    Success {
-                        Value = List.rev acc
-                        Context = failure.Context
-                    }
-        )
-    loop p []
-
-let (|>>) (p: Parser<'a, 's>) (f: 'a -> 'b) : Parser<'b, 's> = 
-    (fun ctx ->
-        match p ctx with
-        | Success success ->
-            Success {
-                Value = f success.Value
-                Context = success.Context
-            }
-        | Failure failure -> Failure failure
-    )
-
-let pInt =
-    many (anyOf "1234567890")
-    |>> (fun numbers ->
-        int(String(Array.ofList(numbers)))
-    )
-
-let sepBy pElement pSep =
-    pElement .>>. (many (pSep >>. pElement))
-    |>> fun (x, xs) -> x :: xs
-
-let spaces = many (str " ")
-
-let (<|>) (pa: Parser<'a, 's>) (pb: Parser<'a, 's>) : Parser<'a, 's> =
-    (fun ctx ->
-        match pa ctx with
-        | Failure a ->
-            if a.Context.Index <> ctx.Index then
-                Failure a
+            let length = String.length expected
+            let fits = ctx.Index + length <= String.length ctx.Text
+            if fits && ctx.Text.Substring(ctx.Index, length) = expected then
+                Success {
+                    Value = expected
+                    Context = { ctx with Index = ctx.Index + length }
+                }
             else
-                match pb ctx with
-                | Failure b ->
-                    Failure {
-                        Expected = sprintf "Any of these: '%O' or '%O'" a.Expected b.Expected
-                        Context = b.Context
-                    }
-                | b -> b
-        | a -> a
+                Failure {
+                    Expected = expected
+                    Context = ctx
+                }
+        )
+
+    let run parser text =
+        let ctx = { Text = text; Index = 0 }
+        parser ctx 
+
+    let test1 () =
+        run (str "parsec") "parsec"
+        |> printfn "%O"
+
+    let test2 () =
+        run (str "parser combinators are awesome") "parser combinators are awesome"
+        |> printfn "%O"
+
+    let test3 () =
+        run (str "parser combinators are awesome") "parser combinator are awesome"
+        |> printfn "%O"
+
+    let (>>.) parserA parserB =
+        (fun ctx ->
+            match parserA ctx with
+            | Success success -> parserB success.Context
+            | Failure failure -> Failure failure
+        )
+
+    let test4 () =
+        let parser = str "parser"
+        let space = str " "
+        let combinators = str "combinators"
+        let are = str "are"
+        let awesome = str "awesome"
+
+        let together =
+            (parser >>. space >>. combinators >>. space >>. are >>. space >>. awesome)
+
+        run together "parser combinators are awesome"
+        |> printfn "%O"
+
+        run together "parser combinator are awesome"
+        |> printfn "%O"
+
+    // let (.>>) parserA parserB =
+    //     (fun ctx ->
+    //         match parserA ctx with
+    //         | Success successA -> 
+    //             match parserB successA.Context with
+    //             | Success successB -> Success { Value = successA.Value; Context = successB.Context }
+    //             | Failure failure -> Failure failure
+    //         | Failure failure -> Failure failure
+    //     )
+
+    // let (.>>.) parserA parserB =
+    //     (fun ctx ->
+    //         match parserA ctx with
+    //         | Success successA ->
+    //             match parserB successA.Context with
+    //             | Success successB -> Success { Value = (successA.Value, successB.Value); Context = successB.Context }
+    //             | Failure failure -> Failure failure
+    //         | Failure failure -> Failure failure
+    //     )
+
+    let test5 () =
+        run (str "a") "a"
+        |> printfn "%O"
+
+    let (<|>) parserA parserB =
+        (fun ctx ->
+            match parserA ctx with
+            | Success successA -> Success successA
+            | Failure failureA ->
+                if failureA.Context.Index <> ctx.Index then
+                    Failure failureA
+                else
+                    match parserB ctx with
+                    | Success successB -> Success successB
+                    | Failure failureB ->
+                        Failure {
+                            Expected = sprintf "%s or %s" failureA.Expected failureB.Expected
+                            Context = failureB.Context
+                        }
+        )
+
+    let test6 () =
+        run (str "a" <|> str "t" <|> str "c" <|> str "g") "g"
+        |> printfn "%O"
+    
+    type Molecule =
+        | A
+        | T
+        | C
+        | G
+
+    let (|>>) parser f =
+        (fun ctx ->
+            match parser ctx with
+            | Success success ->
+                Success {
+                    Value = f success.Value
+                    Context = success.Context
+                }
+            | Failure failure -> Failure failure
+        )
+
+    let a = str "a" |>> fun _ -> A
+    let t = str "t" |>> fun _ -> T
+    let c = str "c" |>> fun _ -> C
+    let g = str "g" |>> fun _ -> G
+    let molecule = a <|> t <|> c <|> g
+
+    let many parser =
+        let rec loop parser acc =
+            (fun ctx ->
+                match parser ctx with
+                | Success success -> 
+                    loop parser (success.Value :: acc) success.Context
+                | Failure failure -> 
+                    if failure.Context.Index <> ctx.Index then
+                        Failure failure
+                    else
+                        Success {
+                            Value = List.rev acc
+                            Context = failure.Context
+                        }
+            )
+        loop parser []
+
+    let test7 () =
+        run (many molecule) "agtgcgttac"
+        |> printfn "%O"
+
+    type EyeColor =
+        | Blue
+        | Brown
+
+    let attempt parser =
+        (fun ctx ->
+            match parser ctx with
+            | Failure _ -> Failure { Expected = ""; Context = ctx }
+            | Success success -> Success success
+        )
+
+    let (<?>) parser expected =
+        (fun ctx ->
+            match parser ctx with
+            | Success success -> Success success
+            | Failure failure ->
+                Failure { failure with Expected = expected }
+        )
+
+
+    let test8 () =
+        let blue = t >>. a >>. a >>. g >>. t >>. g |>> fun _ -> Blue
+        let brown = t >>. a >>. a >>. a >>. t >>. g |>> fun _ -> Brown
+        run (blue <|> brown) "taagtg"
+        |> printfn "%O"
+
+        run (blue <|> brown) "taaatg"
+        |> printfn "%O"
+
+        run (attempt blue <|> brown) "taaatg"
+        |> printfn "%O"
+
+        let blue = blue <?> "In the middle of parsing Blue"
+        let brown = brown <?> "In the middle of parsing Blue"
+        run (blue <|> brown) "taaatg"
+        |> printfn "%O"
+
+    let anyOf chars =
+        (fun ctx ->
+            let char = ctx.Text.[ctx.Index]
+            match Seq.tryFind (fun c -> c = char) chars with
+            | Some found ->
+                Success {
+                    Value = found
+                    Context = { ctx with Index = ctx.Index + 1 }
+                }
+            | None ->
+                Failure {
+                    Expected = sprintf "Any of these: '%O'" chars
+                    Context = ctx
+                }
     )
 
-let attempt (p: Parser<'a, 's>) : Parser<'a, 's> =
-    (fun ctx ->
-        match p ctx with
-        | Failure _ -> Failure { Expected = ""; Context = ctx }
-        | Success success -> Success success
-    )
+    let many1 parser =
+        let rec loop parser acc =
+            (fun ctx ->
+                match parser ctx with
+                | Success success -> 
+                    loop parser (success.Value :: acc) success.Context
+                | Failure failure -> 
+                    if failure.Context.Index <> ctx.Index then
+                        Failure failure
+                    elif List.isEmpty acc then
+                        Failure failure
+                    else
+                        Success {
+                            Value = List.rev acc
+                            Context = failure.Context
+                        }
+            )
+        loop parser []
 
-let (<?>) (p: Parser<'a, 's>) s : Parser<'a, 's> =
-    (fun ctx ->
-        match p ctx with
-        | Success success -> Success success
-        | Failure failure ->
-            Failure { failure with Expected = s }
-    )
+    let parseInt = 
+        many1 (anyOf "1234567890")
+        |>> (fun numbers ->
+            int(String(Array.ofList(numbers)))
+        )
 
-let getState : Parser<'s, 's> =
-    (fun ctx ->
-        Success { 
-            Value = ctx.State
-            Context = ctx
-        }
-    )
+    let (.>>) parserA parserB =
+        (fun ctx ->
+            match parserA ctx with
+            | Success successA -> 
+                match parserB successA.Context with
+                | Success successB -> Success { Value = successA.Value; Context = successB.Context }
+                | Failure failure -> Failure failure
+            | Failure failure -> Failure failure
+        )
 
-let setState (state: 's) : Parser<unit, 's> =
-    (fun ctx ->
-        Success {
-            Value = ()
-            Context = { ctx with State = state }
-        }
-    )
+    let between parserL parserR parser =
+        parserL >>. parser .>> parserR
+    
+    let (.>>.) parserA parserB =
+        (fun ctx ->
+            match parserA ctx with
+            | Success successA ->
+                match parserB successA.Context with
+                | Success successB -> Success { Value = (successA.Value, successB.Value); Context = successB.Context }
+                | Failure failure -> Failure failure
+            | Failure failure -> Failure failure
+        )
 
-let updateState (f: 's -> 's) : Parser<unit, 's> =
-    (fun ctx ->
-        Success {
-            Value = ()
-            Context = { ctx with State = f ctx.State }
-        }
-    )
+    let sepBy parser parserSep =
+        parser .>>. (many (parserSep >>. parser))
+        |>> fun (x, xs) -> x :: xs
 
-let stateSatisfies (f: 's -> bool) : Parser<unit, 's> =
-    (fun ctx ->
-        if f ctx.State then 
+    let ws = many (str " ")
+
+    let test9 () =
+        run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1,2,3]"
+        |> printfn "%O"
+
+        run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1, 2, 3]"
+        |> printfn "%O"
+
+        run (between (str "[" >>. ws) (str "]" >>. ws) (sepBy (parseInt .>> ws) (str "," >>. ws))) "[ 1,2, 3 ]"
+        |> printfn "%O"
+
+module State =
+    type Context<'state> = {
+        State: 'state
+        Text: string
+        Index: int
+    }
+
+    type Success<'value, 'state> = {
+        Value: 'value
+        Context: Context<'state>
+    }
+
+    type Failure<'state> = {
+        Expected: string
+        Context: Context<'state>
+    }
+
+    type Result<'value, 'state> =
+        | Success of Success<'value, 'state>
+        | Failure of Failure<'state>
+
+    type Parser<'value, 'state> = (Context<'state> -> Result<'value, 'state>)
+
+    let str expected =
+        (fun ctx ->
+            let length = String.length expected
+            let fits = ctx.Index + length <= String.length ctx.Text
+            if fits && ctx.Text.Substring(ctx.Index, length) = expected then
+                Success {
+                    Value = expected
+                    Context = { ctx with Index = ctx.Index + length }
+                }
+            else
+                Failure {
+                    Expected = expected
+                    Context = ctx
+                }
+        )
+
+    let run init parser text =
+        let ctx = { State = init; Text = text; Index = 0 }
+        parser ctx 
+
+    let (>>.) parserA parserB =
+        (fun ctx ->
+            match parserA ctx with
+            | Success success -> parserB success.Context
+            | Failure failure -> Failure failure
+        )
+
+    let (<|>) parserA parserB =
+        (fun ctx ->
+            match parserA ctx with
+            | Success successA -> Success successA
+            | Failure failureA ->
+                if failureA.Context.Index <> ctx.Index then
+                    Failure failureA
+                else
+                    match parserB ctx with
+                    | Success successB -> Success successB
+                    | Failure failureB ->
+                        Failure {
+                            Expected = sprintf "%s or %s" failureA.Expected failureB.Expected
+                            Context = failureB.Context
+                        }
+        )
+
+    let many parser =
+        let rec loop parser acc =
+            (fun ctx ->
+                match parser ctx with
+                | Success success -> 
+                    loop parser (success.Value :: acc) success.Context
+                | Failure failure -> 
+                    if failure.Context.Index <> ctx.Index then
+                        Failure failure
+                    else
+                        Success {
+                            Value = List.rev acc
+                            Context = failure.Context
+                        }
+            )
+        loop parser []
+
+    let getState =
+        (fun ctx ->
+            Success { 
+                Value = ctx.State
+                Context = ctx
+            }
+        )
+
+    let setState state =
+        (fun ctx ->
             Success {
                 Value = ()
-                Context = ctx
+                Context = { ctx with State = state }
             }
-        else
-            Failure {
-                Expected = "User state mismatch"
-                Context = ctx
-            }
-    )
+        )
 
-type State =
-    | Empty
-    | Paren of int
-
-let addParen = function
-    | Empty -> Paren 1
-    | Paren n -> Paren (n + 1)
-
-let remParen = function
-    | Empty -> Paren (-1)
-    | Paren n -> Paren (n - 1)
-
-let eof : Parser<unit, 'u> =
-    (fun ctx ->
-        if ctx.Index = String.length ctx.Text - 1 then
+    let updateState f =
+        (fun ctx ->
             Success {
                 Value = ()
-                Context = ctx
+                Context = { ctx with State = f ctx.State }
             }
-        else
-            Failure {
-                Expected = "eof"
-                Context = ctx
-            }
-    )
+        )
 
-let parseParens =
-    (str "(" >>. updateState addParen)
-    <|> (str ")" >>. updateState remParen)
-    <|> eof
+    let stateSatisfies f = 
+        (fun ctx ->
+            if f ctx.State then 
+                Success {
+                    Value = ()
+                    Context = ctx
+                }
+            else
+                Failure {
+                    Expected = "User state mismatch"
+                    Context = ctx
+                }
+        )
 
-let isEmpty = function
-    | Empty -> true
-    | Paren 0 -> true
-    | _ -> false
+    type State =
+        | Empty
+        | Paren of int
 
-module Test =
-    open Xunit
+    let addParen = function
+        | Empty -> Paren 1
+        | Paren n -> Paren (n + 1)
 
-    [<Fact>]
-    let ``Parse only ab`` () =
-        let ab = str "a" >>. str "b"
-        let ac = str "a" >>. str "c"
-        Assert.StrictEqual("ac", run () (ab <|> ac) "ac")
+    let remParen = function
+        | Empty -> Paren (-1)
+        | Paren n -> Paren (n - 1)
+
+    let parseParens =
+        (str "(" >>. updateState addParen)
+        <|> (str ")" >>. updateState remParen)
+
+    let isEmpty = function
+        | Empty -> true
+        | Paren 0 -> true
+        | _ -> false
+
+    let test1 () =
+        run Empty (many parseParens >>. getState) "((()))()())))))((("
+        |> printfn "%O"
+
+        run Empty (many parseParens >>. stateSatisfies isEmpty) "((()))()())))))((("
+        |> printfn "%O"
+
+        run Empty (many parseParens >>. stateSatisfies isEmpty) "((()))()())))))((((("
+        |> printfn "%O"
+    
+    let eof =
+        (fun ctx ->
+            if ctx.Index = String.length ctx.Text - 1 then
+                Success {
+                    Value = ()
+                    Context = ctx
+                }
+            else
+                Failure {
+                    Expected = "eof"
+                    Context = ctx
+                }
+        )
+
 
 [<EntryPoint>]
 let main argv =
-    let input = "cow says moo"
+    NoState.test1 ()
+    NoState.test2 ()
+    NoState.test3 ()
+    NoState.test4 ()
+    NoState.test5 ()
+    NoState.test6 ()
+    NoState.test7 ()
+    NoState.test8 ()
 
-    printfn "%O" (run () (str "cow") "cow")
-    printfn "%O" (run () (str "cow" >>. str " " >>. str "says" >>. str " " >>. str "moo") input)
+    State.test1 ()
 
-    printfn "%O" (run () (str "[" >>. (sepBy (pInt .>> spaces) (str "," .>> spaces)) .>> str "]") "[12,23 ,34 ]")
-
-    printfn "%O" (run () (str "[" >>. (sepBy (str "a" <|> str "b") (str ",")) .>> str "]") "[a,b]")
-
-    let ab = str "a" >>. str "b"
-    let ac = str "a" >>. str "c"
-    printfn "%O" (run () (attempt ab <|> ac) "ac")
-
-    let ab = str "a" >>. str "b" <?> "In the middle of doing a then b"
-    let ac = str "a" >>. str "c" <?> "In the middle of doing a then c"
-    printfn "%O" (run () (ab <|> ac) "ab")
-
-    printfn "%O" (run Empty ((many parseParens) >>. stateSatisfies isEmpty) "((())))(()((()()()()())())()")
+    NoState.test9 ()
 
     0 // return an integer exit code
