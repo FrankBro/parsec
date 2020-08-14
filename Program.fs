@@ -134,6 +134,9 @@ module NoState =
     let test6 () =
         run (str "a" <|> str "t" <|> str "c" <|> str "g") "g"
         |> printfn "%O"
+
+        run (str "a" <|> str "t" <|> str "c" <|> str "g") "y"
+        |> printfn "%O"
     
     type Molecule =
         | A
@@ -280,20 +283,20 @@ module NoState =
             | Failure failure -> Failure failure
         )
 
-    let sepBy parser parserSep =
+    let sepBy1 parser parserSep =
         parser .>>. (many (parserSep >>. parser))
         |>> fun (x, xs) -> x :: xs
 
     let ws = many (str " ")
 
     let test9 () =
-        run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1,2,3]"
+        run (between (str "[") (str "]") (sepBy1 parseInt (str ","))) "[1,2,3]"
         |> printfn "%O"
 
-        run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1, 2, 3]"
+        run (between (str "[") (str "]") (sepBy1 parseInt (str ","))) "[1, 2, 3]"
         |> printfn "%O"
 
-        run (between (str "[" >>. ws) (str "]" >>. ws) (sepBy (parseInt .>> ws) (str "," >>. ws))) "[ 1,2, 3 ]"
+        run (between (str "[" >>. ws) (str "]" >>. ws) (sepBy1 (parseInt .>> ws) (str "," >>. ws))) "[ 1,2, 3 ]"
         |> printfn "%O"
 
 module State =
@@ -475,6 +478,29 @@ module State =
                 }
         )
 
+module FParsec =
+    open FParsec.CharParsers
+    open FParsec.Primitives
+
+    type Expr =
+        | Variable of int
+        | Call of Expr list
+
+    let str s = pstring s
+
+    type Parser<'a> = Parser<'a, unit>
+    let (parseExpr: Parser<Expr>), parseExprImpl = createParserForwardedToRef ()
+
+    let parseVariable = pint32 |>> Variable
+    // let parseCall = parseExpr .>> str " " .>>. parseExpr |>> Call
+
+    // do parseExprImpl := parseCall <|> parseVariable
+    // do parseExprImpl := parseVariable <|> parseCall
+    do parseExprImpl := sepBy1 parseVariable (str " ") |>> fun xs -> match xs with | [x] -> x; | xs -> Call xs
+
+    let test1 () =
+        run parseExpr "1 1"
+        |> printfn "%O"
 
 [<EntryPoint>]
 let main argv =
@@ -490,5 +516,7 @@ let main argv =
     State.test1 ()
 
     NoState.test9 ()
+
+    FParsec.test1 ()
 
     0 // return an integer exit code

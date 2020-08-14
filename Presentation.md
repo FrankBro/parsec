@@ -22,18 +22,9 @@ paginate: true
 
 ---
 
-# Is there a yacc-able C++ grammar?
-The primary yacc grammar you’ll want is from Ed Willink. Ed **believes** his grammar is fully compliant with the ISO/ANSI C++ standard, however he doesn’t warrant it: **“the grammar has not,”** he says, **“been used in anger.”** You can get the grammar without action routines or the grammar with dummy action routines. You can also get the corresponding lexer. For those who are interested in how he achieves a context-free parser (**by pushing all the ambiguities plus a small number of repairs to be done later after parsing is complete**), you might want to read chapter 4 of his thesis.
-
-There is also a very old yacc grammar that doesn’t support templates, exceptions, nor namespaces; plus it deviates from the core language in some subtle ways. You can get that grammar here or here.
-
-Source: https://isocpp.org/wiki/faq/compiler-dependencies#yaccable-grammar
-
----
-
 # How to write your own toy parser combinator
 
-It **really** helps if your language has functions as first-class citizens...
+It **really** helps if your language has functions as first-class citizens
 
 ---
 
@@ -84,7 +75,8 @@ let run parser input =
 # Let's try parsing some texts
 
 ```fsharp
-run (* ??? *) "parsec"
+"parsec"
+|> run (* ??? *) 
 ```
 
 ---
@@ -114,7 +106,8 @@ let str expected =
 # Parsing a single string
 
 ```fsharp
-run (str "parsec") "parsec"
+"parsec"
+|> run (str "parsec") 
 // Success: parsec
 ```
 
@@ -123,7 +116,8 @@ run (str "parsec") "parsec"
 # Parsing more strings?
 
 ```fsharp
-run (str "parser combinators are awesome") "parser combinators are awesome"
+"parser combinators are awesome"
+|> run (str "parser combinators are awesome") 
 // Success: parser combinators are awesome
 ```
 
@@ -132,7 +126,8 @@ run (str "parser combinators are awesome") "parser combinators are awesome"
 # Kind of boring
 
 ```fsharp
-run (str "parser combinators are awesome") "parser combinator are awesome"
+"parser combinator are awesome"
+|> run (str "parser combinators are awesome")
 // Failure: Expecting parser combinators are awesome
 // parser combinator are awesome
 // ^
@@ -171,7 +166,8 @@ let together =
 # Success
 
 ```fsharp
-run together "parser combinators are awesome"
+"parser combinators are awesome"
+|> run together 
 // Success: awesome
 ```
 
@@ -180,7 +176,8 @@ run together "parser combinators are awesome"
 # Failure
 
 ```fsharp
-run together "parser combinator are awesome"
+"parser combinator are awesome"
+|> run together 
 // Failure: Expecting combinators
 // parser combinator are awesome
 //        ^
@@ -201,7 +198,8 @@ The four bases:
 # Parsing DNA
 
 ```fsharp
-run (str "a") "a"
+"a"
+|> run (str "a") 
 // Success: a
 ```
 
@@ -233,8 +231,15 @@ let (<|>) parserA parserB =
 # Parsing DNA
 
 ```fsharp
-run (str "a" <|> str "t" <|> str "c" <|> str "g") "g"
+"g"
+|> run (str "a" <|> str "t" <|> str "c" <|> str "g") 
 // Success: g
+
+"y"
+|> run (str "a" <|> str "t" <|> str "c" <|> str "g") 
+// Failure: Expecting a or t or c or g
+// y
+// ^
 ```
 
 ---
@@ -283,7 +288,8 @@ let molecule = a <|> t <|> c <|> g
 # DNA Sequence
 
 ```fsharp
-run (* ??? *) "agtgcgttac"
+"agtgcgttac"
+|> run (* ??? *) 
 ```
 
 ---
@@ -314,7 +320,8 @@ let many parser =
 # DNA Sequence
 
 ```fsharp
-run (many molecule) "agtgcgttac"
+"agtgcgttac"
+|> run (many molecule) 
 // Success: [A; G; T; G; C; G; T; T; A; C]
 ```
 
@@ -345,7 +352,8 @@ let brown = t >>. a >>. a >>. a >>. t >>. g |>> fun _ -> Brown
 # Easy, we know how to deal with alternatives
 
 ```fsharp
-run (blue <|> brown) "taagtg"
+"taagtg"
+|> run (blue <|> brown) 
 // Success: Blue
 ```
 
@@ -354,7 +362,8 @@ run (blue <|> brown) "taagtg"
 # But why
 
 ```fsharp
-run (blue <|> brown) "taaatg"
+"taaatg"
+|> run (blue <|> brown) 
 // Failure: Expecting g
 // taaatg
 //    ^
@@ -378,7 +387,8 @@ let attempt parser =
 # Works now
 
 ```fsharp
-run (attempt blue <|> brown) "taaatg"
+"taaatg"
+|> run (attempt blue <|> brown) 
 // Success: Brown
 ```
 
@@ -403,7 +413,9 @@ let (<?>) parser expected =
 ```fsharp
 let blue = blue <?> "In the middle of parsing Blue"
 let brown = brown <?> "In the middle of parsing Blue"
-run (blue <|> brown) "taaatg"
+
+"taaatg"
+|> run (blue <|> brown) 
 // Failure: In the middle of parsing Blue
 // taaatg
 //    ^
@@ -469,7 +481,6 @@ let updateState f =
             Context = { ctx with State = f ctx.State }
         }
     )
-
 ```
 
 ---
@@ -499,7 +510,8 @@ let parseParens =
 # Let's try it
 
 ```fsharp
-run Empty (many parseParens >>. getState) "((()))()())))))((("
+"((()))()())))))((("
+|> run Empty (many parseParens >>. getState) 
 // Success: Paren -2
 ```
 
@@ -527,7 +539,8 @@ let stateSatisfies f =
 # Let's make sure it's valid
 
 ```fsharp
-run Empty (many parseParens >>. stateSatisfies isEmpty) "((()))()())))))((("
+"((()))()())))))((("
+|> run Empty (many parseParens >>. stateSatisfies isEmpty) 
 // Failure: Expecting User state mismatch
 // State = Paren -2
 // ((()))()())))))(((
@@ -539,7 +552,8 @@ run Empty (many parseParens >>. stateSatisfies isEmpty) "((()))()())))))((("
 # Now it is
 
 ```fsharp
-run Empty (many parseParens >>. stateSatisfies isEmpty) "((()))()())))))((((("
+"((()))()())))))((((("
+|> run Empty (many parseParens >>. stateSatisfies isEmpty) 
 // Success: ()
 ```
 
@@ -548,7 +562,8 @@ run Empty (many parseParens >>. stateSatisfies isEmpty) "((()))()())))))((((("
 # Typical problems
 
 ```fsharp
-run (* ??? *) "[1,2,3]"
+"[1,2,3]"
+|> run (* ??? *) 
 ```
 
 ---
@@ -633,7 +648,7 @@ let (.>>.) parserA parserB =
 let between parserL parserR parser =
     parserL >>. parser .>> parserR
 
-let sepBy parser parserSep =
+let sepBy1 parser parserSep =
     parser .>>. (many (parserSep >>. parser))
     |>> fun (x, xs) -> x :: xs
 ```
@@ -643,7 +658,8 @@ let sepBy parser parserSep =
 # Let's parse this
 
 ```fsharp
-run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1,2,3]"
+"[1,2,3]"
+|> run (between (str "[") (str "]") (sepBy1 parseInt (str ","))) 
 // Success: [1; 2; 3]
 ```
 
@@ -652,7 +668,8 @@ run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1,2,3]"
 # Someone ruins everything
 
 ```fsharp
-run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1, 2, 3]"
+"[1, 2, 3]"
+|> run (between (str "[") (str "]") (sepBy1 parseInt (str ","))) 
 // Failure: Expecting Any of these: '1234567890'
 // [1, 2, 3]
 //    ^
@@ -663,7 +680,10 @@ run (between (str "[") (str "]") (sepBy parseInt (str ","))) "[1, 2, 3]"
 # Now it works
 
 ```fsharp
-run (between (str "[" >>. ws) (str "]" >>. ws) (sepBy (parseInt .>> ws) (str "," >>. ws))) "[ 1,2, 3 ]"
+let ws = many (str " ")
+
+"[ 1,2, 3 ]"
+|> run (between (str "[" >>. ws) (str "]" >>. ws) (sepBy1 (parseInt .>> ws) (str "," >>. ws))) 
 // Success: [1; 2; 3]
 ```
 
@@ -689,6 +709,72 @@ let eof =
                 Context = ctx
             }
     )
+```
+
+---
+
+# Left recursion
+
+```fsharp
+type Expr =
+    | Variable of int
+    | Call of Expr list
+```
+
+---
+
+# Parsing it
+
+```fsharp
+let parseExpr = parseCall <|> parseVariable
+let parseVariable = parseInt |>> Variable
+let parseCall = many (parseExpr .>> ws) |>> Call
+
+"1"
+|> run parseExpr
+// Stack overflow
+```
+
+---
+
+# Parsing it ... again
+
+```fsharp
+let parseExpr = parseVariable <|> parseCall
+let parseVariable = parseInt |>> Variable
+let parseCall = many (parseExpr .>> ws) |>> Call
+
+"1"
+|> run parseExpr
+// Success: Variable 1
+```
+
+---
+
+# Let's try a call
+
+```fsharp
+"1 1"
+|> run parseExpr
+// Stack overflow
+```
+
+---
+
+# Left recursion
+
+```fsharp
+let parseVariable = parseInt |>> Variable
+let parseExpr =
+    sepBy1 parseVariable (str " ")
+    |>> fun exprs ->
+        match exprs with
+        | [expr] -> expr // Variable
+        | _ -> Call exprs
+
+"1 1"
+|> run parseExpr
+// Success: Call [Variable 1; Variable 1]
 ```
 
 ---
@@ -727,5 +813,3 @@ Source: https://www.quanttec.com/fparsec/users-guide/performance-optimizations.h
 # Okay, I rambled long enough
 
 Give parser combinators another try
-
----
