@@ -54,8 +54,7 @@ type Failure = {
 
 type Result<'value> =
     | Success of Success<'value>
-    | Failure of Failure>
-
+    | Failure of Failure
 ```
 
 ---
@@ -327,10 +326,6 @@ let many parser =
 
 ---
 
-# Where problems happen with parser combinators
-
----
-
 # DNA mutation
 
 Somewhere in the OCA2, there is a single gene mutation that tells you if you'll have blue or brown eyes.
@@ -412,7 +407,7 @@ let (<?>) parser expected =
 
 ```fsharp
 let blue = blue <?> "In the middle of parsing Blue"
-let brown = brown <?> "In the middle of parsing Blue"
+let brown = brown <?> "In the middle of parsing Brown"
 
 "taaatg"
 |> run (blue <|> brown) 
@@ -485,7 +480,7 @@ let updateState f =
 
 ---
 
-# Balancing parenthesis
+# New example: Balancing parenthesis
 
 ```fsharp
 type State =
@@ -539,9 +534,14 @@ let stateSatisfies f =
 # Let's make sure it's valid
 
 ```fsharp
+let isEmpty = function
+    | Empty -> true
+    | Paren 0 -> true
+    | _ -> false
+
 "((()))()())))))((("
 |> run Empty (many parseParens >>. stateSatisfies isEmpty) 
-// Failure: Expecting User state mismatch
+// Failure: User state mismatch
 // State = Paren -2
 // ((()))()())))))(((
 //                   ^
@@ -559,7 +559,7 @@ let stateSatisfies f =
 
 ---
 
-# Typical problems
+# New example: List of integers
 
 ```fsharp
 "[1,2,3]"
@@ -728,7 +728,7 @@ type Expr =
 ```fsharp
 let parseExpr = parseCall <|> parseVariable
 let parseVariable = parseInt |>> Variable
-let parseCall = many (parseExpr .>> ws) |>> Call
+let parseCall = many (parseExpr .>> str " ") |>> Call
 
 "1"
 |> run parseExpr
@@ -742,7 +742,7 @@ let parseCall = many (parseExpr .>> ws) |>> Call
 ```fsharp
 let parseExpr = parseVariable <|> parseCall
 let parseVariable = parseInt |>> Variable
-let parseCall = many (parseExpr .>> ws) |>> Call
+let parseCall = many (parseExpr .>> str " ") |>> Call
 
 "1"
 |> run parseExpr

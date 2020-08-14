@@ -215,7 +215,7 @@ module NoState =
         |> printfn "%O"
 
         let blue = blue <?> "In the middle of parsing Blue"
-        let brown = brown <?> "In the middle of parsing Blue"
+        let brown = brown <?> "In the middle of parsing Brown"
         run (blue <|> brown) "taaatg"
         |> printfn "%O"
 
