@@ -559,6 +559,72 @@ let isEmpty = function
 
 ---
 
+# Left recursion
+
+```fsharp
+type Expr =
+    | Variable of int
+    | Call of Expr list
+```
+
+---
+
+# Parsing it
+
+```fsharp
+let parseExpr = parseCall <|> parseVariable
+let parseVariable = parseInt |>> Variable
+let parseCall = many (parseExpr .>> str " ") |>> Call
+
+"1"
+|> run parseExpr
+// Stack overflow
+```
+
+---
+
+# Parsing it ... again
+
+```fsharp
+let parseExpr = parseVariable <|> parseCall
+let parseVariable = parseInt |>> Variable
+let parseCall = many (parseExpr .>> str " ") |>> Call
+
+"1"
+|> run parseExpr
+// Success: Variable 1
+```
+
+---
+
+# Let's try a call
+
+```fsharp
+"1 1"
+|> run parseExpr
+// Stack overflow
+```
+
+---
+
+# Left recursion
+
+```fsharp
+let parseVariable = parseInt |>> Variable
+let parseExpr =
+    sepBy1 parseVariable (str " ")
+    |>> fun exprs ->
+        match exprs with
+        | [expr] -> expr // Variable
+        | _ -> Call exprs
+
+"1 1"
+|> run parseExpr
+// Success: Call [Variable 1; Variable 1]
+```
+
+---
+
 # New example: List of integers
 
 ```fsharp
@@ -709,72 +775,6 @@ let eof =
                 Context = ctx
             }
     )
-```
-
----
-
-# Left recursion
-
-```fsharp
-type Expr =
-    | Variable of int
-    | Call of Expr list
-```
-
----
-
-# Parsing it
-
-```fsharp
-let parseExpr = parseCall <|> parseVariable
-let parseVariable = parseInt |>> Variable
-let parseCall = many (parseExpr .>> str " ") |>> Call
-
-"1"
-|> run parseExpr
-// Stack overflow
-```
-
----
-
-# Parsing it ... again
-
-```fsharp
-let parseExpr = parseVariable <|> parseCall
-let parseVariable = parseInt |>> Variable
-let parseCall = many (parseExpr .>> str " ") |>> Call
-
-"1"
-|> run parseExpr
-// Success: Variable 1
-```
-
----
-
-# Let's try a call
-
-```fsharp
-"1 1"
-|> run parseExpr
-// Stack overflow
-```
-
----
-
-# Left recursion
-
-```fsharp
-let parseVariable = parseInt |>> Variable
-let parseExpr =
-    sepBy1 parseVariable (str " ")
-    |>> fun exprs ->
-        match exprs with
-        | [expr] -> expr // Variable
-        | _ -> Call exprs
-
-"1 1"
-|> run parseExpr
-// Success: Call [Variable 1; Variable 1]
 ```
 
 ---
