@@ -8,7 +8,7 @@ paginate: true
 
 ---
 
-## Parsing is HARD
+## Reality check: Parsing is HARD
 
 ---
 
@@ -22,13 +22,19 @@ paginate: true
 
 ---
 
-# How to write your own toy parser combinator
+# Writing my own
 
-It **really** helps if your language has functions as first-class citizens
+"What I cannot create, I do not understand"
+
+Btw. It **really** helps if your language has functions as first-class citizens
 
 ---
 
-# First, a context object that will be threaded along
+# Foundation
+
+---
+
+# Context
 
 ```fsharp
 type Context = {
@@ -39,7 +45,7 @@ type Context = {
 
 ---
 
-# Second, a way to identify the result of applying a parser
+# Result
 
 ```fsharp
 type Success<'value> = {
@@ -59,7 +65,7 @@ type Result<'value> =
 
 ---
 
-# Finally, our parser definition and a way to run it
+# Parser
 
 ```fsharp
 type Parser<'value> = (Context -> Result<'value>)
@@ -71,7 +77,11 @@ let run parser input =
 
 ---
 
-# Let's try parsing some texts
+# Let's start parsing!
+
+---
+
+# A simple string
 
 ```fsharp
 "parsec"
@@ -80,7 +90,7 @@ let run parser input =
 
 ---
 
-# Parsing a string
+# How to parse a string
 
 ```fsharp
 let str expected =
@@ -112,7 +122,7 @@ let str expected =
 
 ---
 
-# Parsing more strings?
+# Parsing many strings?
 
 ```fsharp
 "parser combinators are awesome"
@@ -122,7 +132,7 @@ let str expected =
 
 ---
 
-# Kind of boring
+# Uninformative failure
 
 ```fsharp
 "parser combinator are awesome"
@@ -134,7 +144,11 @@ let str expected =
 
 ---
 
-# Combination
+# Combining parsers
+
+---
+
+# Combining operator
 
 ```fsharp
 let (>>.) parserA parserB =
@@ -147,7 +161,7 @@ let (>>.) parserA parserB =
 
 ---
 
-# Parsing multiple strings
+# Parsing many strings
 
 ```fsharp
 let parser = str "parser"
@@ -184,6 +198,10 @@ let together =
 
 ---
 
+# Adding complexity
+
+---
+
 # Parsing DNA
 
 The four bases:
@@ -204,7 +222,11 @@ The four bases:
 
 ---
 
-# Alternatives
+# Parsing alternatives
+
+---
+
+# Alternative operator
 
 ```fsharp
 let (<|>) parserA parserB =
@@ -243,7 +265,11 @@ let (<|>) parserA parserB =
 
 ---
 
-# Mapping
+# Parser transformation
+
+---
+
+# More than strings
 
 ```fsharp
 type Molecule =
@@ -255,7 +281,7 @@ type Molecule =
 
 ---
 
-# Mapping function
+# Mapping operator
 
 ```fsharp
 let (|>>) parser f =
@@ -293,7 +319,11 @@ let molecule = a <|> t <|> c <|> g
 
 ---
 
-# Sequence
+# Parsing sequences
+
+---
+
+# Sequence function
 
 ```fsharp
 let many parser =
@@ -326,6 +356,10 @@ let many parser =
 
 ---
 
+# Example: DNA mutation
+
+---
+
 # DNA mutation
 
 Somewhere in the OCA2, there is a single gene mutation that tells you if you'll have blue or brown eyes.
@@ -344,7 +378,7 @@ let brown = t >>. a >>. a >>. a >>. t >>. g |>> fun _ -> Brown
 
 ---
 
-# Easy, we know how to deal with alternatives
+# Success
 
 ```fsharp
 "taagtg"
@@ -354,7 +388,7 @@ let brown = t >>. a >>. a >>. a >>. t >>. g |>> fun _ -> Brown
 
 ---
 
-# But why
+# Failure
 
 ```fsharp
 "taaatg"
@@ -366,7 +400,7 @@ let brown = t >>. a >>. a >>. a >>. t >>. g |>> fun _ -> Brown
 
 ---
 
-# Backtracking
+# Backtracking function
 
 ```fsharp
 let attempt parser =
@@ -379,7 +413,7 @@ let attempt parser =
 
 ---
 
-# Works now
+# Success
 
 ```fsharp
 "taaatg"
@@ -403,7 +437,7 @@ let (<?>) parser expected =
 
 ---
 
-# Helpful
+# Contextful errors
 
 ```fsharp
 let blue = blue <?> "In the middle of parsing Blue"
@@ -418,7 +452,7 @@ let brown = brown <?> "In the middle of parsing Brown"
 
 ---
 
-# More useful, a state machine
+# Allowing state machines
 
 ```fsharp
 type Context<'state> = {
@@ -480,7 +514,9 @@ let updateState f =
 
 ---
 
-# New example: Balancing parenthesis
+# Example: Balancing parenthesis
+
+---
 
 ```fsharp
 type State =
@@ -502,7 +538,7 @@ let parseParens =
 
 ---
 
-# Let's try it
+# Success
 
 ```fsharp
 "((()))()())))))((("
@@ -531,7 +567,7 @@ let stateSatisfies f =
 ```
 ---
 
-# Let's make sure it's valid
+# Making success depend on the state
 
 ```fsharp
 let isEmpty = function
@@ -549,7 +585,7 @@ let isEmpty = function
 
 ---
 
-# Now it is
+# Success
 
 ```fsharp
 "((()))()())))))((((("
@@ -559,7 +595,11 @@ let isEmpty = function
 
 ---
 
-# Left recursion
+# Example: Left recursion
+
+---
+
+# A simple AST
 
 ```fsharp
 type Expr =
@@ -610,7 +650,7 @@ let parseExpr = parseA <|> parseB <|> parseList
 
 ---
 
-# Ugh, let's reverse again?
+# Parsing it ... like we used to
 
 ```fsharp
 let parseA = str "a" |>> fun _ -> A
@@ -649,7 +689,11 @@ let parseExpr =
 
 ---
 
-# New example: List of integers
+# Example: List of integers
+
+---
+
+# How could we parse this
 
 ```fsharp
 "[1,2,3]"
@@ -745,7 +789,7 @@ let sepBy1 parser parserSep =
 
 ---
 
-# Let's parse this
+# Parsing a list of integers
 
 ```fsharp
 "[1,2,3]"
@@ -815,8 +859,6 @@ let eof =
 
 In the past, the relatively poor performance of parser combinator libraries has often been cited as the primary impediment to their more widespread adoption. For this reason optimal performance stood front and center as a design goal during the development of FParsec and a lot of effort has been spent on optimizing parsing speed. As a result, **FParsec has become so fast that parsers implemented with FParsec often significantly outperform parsers created by parser generator tools like fslex & fsyacc**.
 
-**In general, a parser implemented in FParsec can get close to the performance of a hand‐optimized recursive‐descent parser written in C#**. Due to the multi‐layered architecture of the FParsec API, you always have the option to fall back to the lower‐level API should a particular parser component implemented with the high‐level API turn out to be too slow. Hence, if you choose FParsec for implementing your parsers, you don’t have to worry that performance will become a reason for switching away from FParsec.
-
 ---
 
 # Performance guidelines
@@ -836,4 +878,6 @@ Source: https://www.quanttec.com/fparsec/users-guide/performance-optimizations.h
 
 # Okay, I rambled long enough
 
-Give parser combinators another try
+Parser combinators are awesome
+
+Success: awesome

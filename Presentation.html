@@ -1,0 +1,770 @@
+<!DOCTYPE html><html lang="en-CA"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><style>@media screen{body,html{background:#000;height:100%;margin:0;overflow:hidden}.bespoke-marp-parent{bottom:0;left:0;position:absolute;right:0;top:0}.bespoke-marp-parent.bespoke-marp-cursor-inactive{cursor:none}svg.bespoke-marp-slide{height:100%;left:0;pointer-events:none;position:absolute;top:0;width:100%;z-index:-1;-webkit-transform:translateZ(0);transform:translateZ(0)}svg.bespoke-marp-slide.bespoke-marp-active{pointer-events:auto;z-index:0}.bespoke-progress-parent{background:#222;display:flex;height:5px;width:100%}.bespoke-progress-parent+.bespoke-marp-parent{top:5px}.bespoke-progress-parent .bespoke-progress-bar{flex:0 0 0;background:#0288d1;transition:flex-basis .2s cubic-bezier(0,1,1,1)}}@media print{.bespoke-progress-parent{display:none}.bespoke-marp-parent{top:0}}</style><style>article#presentation > svg > foreignObject > section {
+  width: 1280px;
+  height: 720px;
+
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+
+  scroll-snap-align: center center;
+}article#presentation > svg > foreignObject > section::after {
+  bottom: 0;
+  content: attr(data-marpit-pagination);
+  padding: inherit;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}article#presentation > svg > foreignObject > section:not([data-marpit-pagination])::after {
+  display: none;
+}/* Normalization */article#presentation > svg > foreignObject > section h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}@page {
+  size: 1280px 720px;
+  margin: 0;
+}@media print {
+  html, body {
+    margin: 0;
+    page-break-inside: avoid;
+  }
+
+  article#presentation > svg > foreignObject > section {
+    page-break-before: always;
+  }
+
+  article#presentation > svg > foreignObject > section, article#presentation > svg > foreignObject > section * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  article#presentation > svg {
+    display: block;
+    height: 100vh;
+    width: 100vw;
+  }
+}article#presentation > svg > foreignObject > section svg[data-marp-fitting=svg]{display:block;height:auto;width:100%}@supports (-ms-ime-align:auto){article#presentation > svg > foreignObject > section svg[data-marp-fitting=svg]{position:static}}article#presentation > svg > foreignObject > section svg[data-marp-fitting=svg].__reflow__{content:""}@supports (-ms-ime-align:auto){article#presentation > svg > foreignObject > section svg[data-marp-fitting=svg].__reflow__{position:relative}}article#presentation > svg > foreignObject > section [data-marp-fitting-svg-content]{display:table;white-space:nowrap}article#presentation > svg > foreignObject > section [data-marp-fitting-svg-content-wrap]{white-space:pre}article#presentation > svg > foreignObject > section img[data-marp-twemoji]{background:transparent;height:1em;margin:0 .05em 0 .1em;vertical-align:-.1em;width:1em}/*!
+ * Marp default theme.
+ *
+ * @theme default
+ */@font-face{font-family:octicons-link;src:url(data:font/woff;charset=utf-8;base64,d09GRgABAAAAAAZwABAAAAAACFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEU0lHAAAGaAAAAAgAAAAIAAAAAUdTVUIAAAZcAAAACgAAAAoAAQAAT1MvMgAAAyQAAABJAAAAYFYEU3RjbWFwAAADcAAAAEUAAACAAJThvmN2dCAAAATkAAAABAAAAAQAAAAAZnBnbQAAA7gAAACyAAABCUM+8IhnYXNwAAAGTAAAABAAAAAQABoAI2dseWYAAAFsAAABPAAAAZwcEq9taGVhZAAAAsgAAAA0AAAANgh4a91oaGVhAAADCAAAABoAAAAkCA8DRGhtdHgAAAL8AAAADAAAAAwGAACfbG9jYQAAAsAAAAAIAAAACABiATBtYXhwAAACqAAAABgAAAAgAA8ASm5hbWUAAAToAAABQgAAAlXu73sOcG9zdAAABiwAAAAeAAAAME3QpOBwcmVwAAAEbAAAAHYAAAB/aFGpk3jaTY6xa8JAGMW/O62BDi0tJLYQincXEypYIiGJjSgHniQ6umTsUEyLm5BV6NDBP8Tpts6F0v+k/0an2i+itHDw3v2+9+DBKTzsJNnWJNTgHEy4BgG3EMI9DCEDOGEXzDADU5hBKMIgNPZqoD3SilVaXZCER3/I7AtxEJLtzzuZfI+VVkprxTlXShWKb3TBecG11rwoNlmmn1P2WYcJczl32etSpKnziC7lQyWe1smVPy/Lt7Kc+0vWY/gAgIIEqAN9we0pwKXreiMasxvabDQMM4riO+qxM2ogwDGOZTXxwxDiycQIcoYFBLj5K3EIaSctAq2kTYiw+ymhce7vwM9jSqO8JyVd5RH9gyTt2+J/yUmYlIR0s04n6+7Vm1ozezUeLEaUjhaDSuXHwVRgvLJn1tQ7xiuVv/ocTRF42mNgZGBgYGbwZOBiAAFGJBIMAAizAFoAAABiAGIAznjaY2BkYGAA4in8zwXi+W2+MjCzMIDApSwvXzC97Z4Ig8N/BxYGZgcgl52BCSQKAA3jCV8CAABfAAAAAAQAAEB42mNgZGBg4f3vACQZQABIMjKgAmYAKEgBXgAAeNpjYGY6wTiBgZWBg2kmUxoDA4MPhGZMYzBi1AHygVLYQUCaawqDA4PChxhmh/8ODDEsvAwHgMKMIDnGL0x7gJQCAwMAJd4MFwAAAHjaY2BgYGaA4DAGRgYQkAHyGMF8NgYrIM3JIAGVYYDT+AEjAwuDFpBmA9KMDEwMCh9i/v8H8sH0/4dQc1iAmAkALaUKLgAAAHjaTY9LDsIgEIbtgqHUPpDi3gPoBVyRTmTddOmqTXThEXqrob2gQ1FjwpDvfwCBdmdXC5AVKFu3e5MfNFJ29KTQT48Ob9/lqYwOGZxeUelN2U2R6+cArgtCJpauW7UQBqnFkUsjAY/kOU1cP+DAgvxwn1chZDwUbd6CFimGXwzwF6tPbFIcjEl+vvmM/byA48e6tWrKArm4ZJlCbdsrxksL1AwWn/yBSJKpYbq8AXaaTb8AAHja28jAwOC00ZrBeQNDQOWO//sdBBgYGRiYWYAEELEwMTE4uzo5Zzo5b2BxdnFOcALxNjA6b2ByTswC8jYwg0VlNuoCTWAMqNzMzsoK1rEhNqByEyerg5PMJlYuVueETKcd/89uBpnpvIEVomeHLoMsAAe1Id4AAAAAAAB42oWQT07CQBTGv0JBhagk7HQzKxca2sJCE1hDt4QF+9JOS0nbaaYDCQfwCJ7Au3AHj+LO13FMmm6cl7785vven0kBjHCBhfpYuNa5Ph1c0e2Xu3jEvWG7UdPDLZ4N92nOm+EBXuAbHmIMSRMs+4aUEd4Nd3CHD8NdvOLTsA2GL8M9PODbcL+hD7C1xoaHeLJSEao0FEW14ckxC+TU8TxvsY6X0eLPmRhry2WVioLpkrbp84LLQPGI7c6sOiUzpWIWS5GzlSgUzzLBSikOPFTOXqly7rqx0Z1Q5BAIoZBSFihQYQOOBEdkCOgXTOHA07HAGjGWiIjaPZNW13/+lm6S9FT7rLHFJ6fQbkATOG1j2OFMucKJJsxIVfQORl+9Jyda6Sl1dUYhSCm1dyClfoeDve4qMYdLEbfqHf3O/AdDumsjAAB42mNgYoAAZQYjBmyAGYQZmdhL8zLdDEydARfoAqIAAAABAAMABwAKABMAB///AA8AAQAAAAAAAAAAAAAAAAABAAAAAA==) format("woff")}article#presentation > svg > foreignObject > section .markdown-body,article#presentation > svg > foreignObject > section{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;color:#24292e;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;font-size:16px;line-height:1.5;word-wrap:break-word}article#presentation > svg > foreignObject > section .markdown-body .pl-c,article#presentation > svg > foreignObject > section .pl-c{color:#6a737d}article#presentation > svg > foreignObject > section .markdown-body .pl-c1,article#presentation > svg > foreignObject > section .markdown-body .pl-s .pl-v,article#presentation > svg > foreignObject > section .pl-c1,article#presentation > svg > foreignObject > section .pl-s .pl-v{color:#005cc5}article#presentation > svg > foreignObject > section .markdown-body .pl-e,article#presentation > svg > foreignObject > section .markdown-body .pl-en,article#presentation > svg > foreignObject > section .pl-e,article#presentation > svg > foreignObject > section .pl-en{color:#6f42c1}article#presentation > svg > foreignObject > section .markdown-body .pl-s .pl-s1,article#presentation > svg > foreignObject > section .markdown-body .pl-smi,article#presentation > svg > foreignObject > section .pl-s .pl-s1,article#presentation > svg > foreignObject > section .pl-smi{color:#24292e}article#presentation > svg > foreignObject > section .markdown-body .pl-ent,article#presentation > svg > foreignObject > section .pl-ent{color:#22863a}article#presentation > svg > foreignObject > section .markdown-body .pl-k,article#presentation > svg > foreignObject > section .pl-k{color:#d73a49}article#presentation > svg > foreignObject > section .markdown-body .pl-pds,article#presentation > svg > foreignObject > section .markdown-body .pl-s,article#presentation > svg > foreignObject > section .markdown-body .pl-s .pl-pse .pl-s1,article#presentation > svg > foreignObject > section .markdown-body .pl-sr,article#presentation > svg > foreignObject > section .markdown-body .pl-sr .pl-cce,article#presentation > svg > foreignObject > section .markdown-body .pl-sr .pl-sra,article#presentation > svg > foreignObject > section .markdown-body .pl-sr .pl-sre,article#presentation > svg > foreignObject > section .pl-pds,article#presentation > svg > foreignObject > section .pl-s,article#presentation > svg > foreignObject > section .pl-s .pl-pse .pl-s1,article#presentation > svg > foreignObject > section .pl-sr,article#presentation > svg > foreignObject > section .pl-sr .pl-cce,article#presentation > svg > foreignObject > section .pl-sr .pl-sra,article#presentation > svg > foreignObject > section .pl-sr .pl-sre{color:#032f62}article#presentation > svg > foreignObject > section .markdown-body .pl-smw,article#presentation > svg > foreignObject > section .markdown-body .pl-v,article#presentation > svg > foreignObject > section .pl-smw,article#presentation > svg > foreignObject > section .pl-v{color:#e36209}article#presentation > svg > foreignObject > section .markdown-body .pl-bu,article#presentation > svg > foreignObject > section .pl-bu{color:#b31d28}article#presentation > svg > foreignObject > section .markdown-body .pl-ii,article#presentation > svg > foreignObject > section .pl-ii{color:#fafbfc;background-color:#b31d28}article#presentation > svg > foreignObject > section .markdown-body .pl-c2,article#presentation > svg > foreignObject > section .pl-c2{color:#fafbfc;background-color:#d73a49}article#presentation > svg > foreignObject > section .markdown-body .pl-c2:before,article#presentation > svg > foreignObject > section .pl-c2:before{content:"^M"}article#presentation > svg > foreignObject > section .markdown-body .pl-sr .pl-cce,article#presentation > svg > foreignObject > section .pl-sr .pl-cce{font-weight:700;color:#22863a}article#presentation > svg > foreignObject > section .markdown-body .pl-ml,article#presentation > svg > foreignObject > section .pl-ml{color:#735c0f}article#presentation > svg > foreignObject > section .markdown-body .pl-mh,article#presentation > svg > foreignObject > section .markdown-body .pl-mh .pl-en,article#presentation > svg > foreignObject > section .markdown-body .pl-ms,article#presentation > svg > foreignObject > section .pl-mh,article#presentation > svg > foreignObject > section .pl-mh .pl-en,article#presentation > svg > foreignObject > section .pl-ms{font-weight:700;color:#005cc5}article#presentation > svg > foreignObject > section .markdown-body .pl-mi,article#presentation > svg > foreignObject > section .pl-mi{font-style:italic;color:#24292e}article#presentation > svg > foreignObject > section .markdown-body .pl-mb,article#presentation > svg > foreignObject > section .pl-mb{font-weight:700;color:#24292e}article#presentation > svg > foreignObject > section .markdown-body .pl-md,article#presentation > svg > foreignObject > section .pl-md{color:#b31d28;background-color:#ffeef0}article#presentation > svg > foreignObject > section .markdown-body .pl-mi1,article#presentation > svg > foreignObject > section .pl-mi1{color:#22863a;background-color:#f0fff4}article#presentation > svg > foreignObject > section .markdown-body .pl-mc,article#presentation > svg > foreignObject > section .pl-mc{color:#e36209;background-color:#ffebda}article#presentation > svg > foreignObject > section .markdown-body .pl-mi2,article#presentation > svg > foreignObject > section .pl-mi2{color:#f6f8fa;background-color:#005cc5}article#presentation > svg > foreignObject > section .markdown-body .pl-mdr,article#presentation > svg > foreignObject > section .pl-mdr{font-weight:700;color:#6f42c1}article#presentation > svg > foreignObject > section .markdown-body .pl-ba,article#presentation > svg > foreignObject > section .pl-ba{color:#586069}article#presentation > svg > foreignObject > section .markdown-body .pl-sg,article#presentation > svg > foreignObject > section .pl-sg{color:#959da5}article#presentation > svg > foreignObject > section .markdown-body .pl-corl,article#presentation > svg > foreignObject > section .pl-corl{text-decoration:underline;color:#032f62}article#presentation > svg > foreignObject > section .markdown-body .octicon,article#presentation > svg > foreignObject > section .octicon{display:inline-block;vertical-align:text-top;fill:currentColor}article#presentation > svg > foreignObject > section .markdown-body a,article#presentation > svg > foreignObject > section a{background-color:transparent}article#presentation > svg > foreignObject > section .markdown-body a:active,article#presentation > svg > foreignObject > section .markdown-body a:hover,article#presentation > svg > foreignObject > section a:active,article#presentation > svg > foreignObject > section a:hover{outline-width:0}article#presentation > svg > foreignObject > section .markdown-body strong,article#presentation > svg > foreignObject > section strong{font-weight:inherit;font-weight:bolder}article#presentation > svg > foreignObject > section .markdown-body h1,article#presentation > svg > foreignObject > section h1{margin:.67em 0}article#presentation > svg > foreignObject > section .markdown-body img,article#presentation > svg > foreignObject > section img{border-style:none}article#presentation > svg > foreignObject > section .markdown-body code,article#presentation > svg > foreignObject > section .markdown-body kbd,article#presentation > svg > foreignObject > section .markdown-body pre,article#presentation > svg > foreignObject > section code,article#presentation > svg > foreignObject > section kbd,article#presentation > svg > foreignObject > section pre{font-family:monospace,monospace;font-size:1em}article#presentation > svg > foreignObject > section .markdown-body hr,article#presentation > svg > foreignObject > section hr{box-sizing:content-box;overflow:visible}article#presentation > svg > foreignObject > section .markdown-body input,article#presentation > svg > foreignObject > section input{font:inherit;margin:0;overflow:visible}article#presentation > svg > foreignObject > section .markdown-body [type=checkbox],article#presentation > svg > foreignObject > section [type=checkbox]{box-sizing:border-box;padding:0}article#presentation > svg > foreignObject > section .markdown-body *,article#presentation > svg > foreignObject > section *{box-sizing:border-box}article#presentation > svg > foreignObject > section .markdown-body input,article#presentation > svg > foreignObject > section input{font-family:inherit;font-size:inherit;line-height:inherit}article#presentation > svg > foreignObject > section .markdown-body a,article#presentation > svg > foreignObject > section a{color:#0366d6;text-decoration:none}article#presentation > svg > foreignObject > section .markdown-body a:hover,article#presentation > svg > foreignObject > section a:hover{text-decoration:underline}article#presentation > svg > foreignObject > section .markdown-body strong,article#presentation > svg > foreignObject > section strong{font-weight:600}article#presentation > svg > foreignObject > section .markdown-body hr,article#presentation > svg > foreignObject > section hr{height:0;margin:15px 0;overflow:hidden;background:transparent;border-bottom:1px solid #dfe2e5}article#presentation > svg > foreignObject > section .markdown-body hr:before,article#presentation > svg > foreignObject > section hr:before{display:table;content:""}article#presentation > svg > foreignObject > section .markdown-body hr:after,article#presentation > svg > foreignObject > section hr:after{display:table;clear:both;content:""}article#presentation > svg > foreignObject > section .markdown-body table,article#presentation > svg > foreignObject > section table{border-spacing:0;border-collapse:collapse}article#presentation > svg > foreignObject > section .markdown-body td,article#presentation > svg > foreignObject > section .markdown-body th,article#presentation > svg > foreignObject > section td,article#presentation > svg > foreignObject > section th{padding:0}article#presentation > svg > foreignObject > section .markdown-body h1,article#presentation > svg > foreignObject > section .markdown-body h2,article#presentation > svg > foreignObject > section .markdown-body h3,article#presentation > svg > foreignObject > section .markdown-body h4,article#presentation > svg > foreignObject > section .markdown-body h5,article#presentation > svg > foreignObject > section .markdown-body h6,article#presentation > svg > foreignObject > section h1,article#presentation > svg > foreignObject > section h2,article#presentation > svg > foreignObject > section h3,article#presentation > svg > foreignObject > section h4,article#presentation > svg > foreignObject > section h5,article#presentation > svg > foreignObject > section h6{margin-top:0;margin-bottom:0}article#presentation > svg > foreignObject > section .markdown-body h1,article#presentation > svg > foreignObject > section h1{font-size:32px;font-weight:600}article#presentation > svg > foreignObject > section .markdown-body h2,article#presentation > svg > foreignObject > section h2{font-size:24px;font-weight:600}article#presentation > svg > foreignObject > section .markdown-body h3,article#presentation > svg > foreignObject > section h3{font-size:20px;font-weight:600}article#presentation > svg > foreignObject > section .markdown-body h4,article#presentation > svg > foreignObject > section h4{font-size:16px;font-weight:600}article#presentation > svg > foreignObject > section .markdown-body h5,article#presentation > svg > foreignObject > section h5{font-size:14px;font-weight:600}article#presentation > svg > foreignObject > section .markdown-body h6,article#presentation > svg > foreignObject > section h6{font-size:12px;font-weight:600}article#presentation > svg > foreignObject > section .markdown-body p,article#presentation > svg > foreignObject > section p{margin-top:0;margin-bottom:10px}article#presentation > svg > foreignObject > section .markdown-body blockquote,article#presentation > svg > foreignObject > section blockquote{margin:0}article#presentation > svg > foreignObject > section .markdown-body ol,article#presentation > svg > foreignObject > section .markdown-body ul,article#presentation > svg > foreignObject > section ol,article#presentation > svg > foreignObject > section ul{padding-left:0;margin-top:0;margin-bottom:0}article#presentation > svg > foreignObject > section .markdown-body ol ol,article#presentation > svg > foreignObject > section .markdown-body ul ol,article#presentation > svg > foreignObject > section ol ol,article#presentation > svg > foreignObject > section ul ol{list-style-type:lower-roman}article#presentation > svg > foreignObject > section .markdown-body ol ol ol,article#presentation > svg > foreignObject > section .markdown-body ol ul ol,article#presentation > svg > foreignObject > section .markdown-body ul ol ol,article#presentation > svg > foreignObject > section .markdown-body ul ul ol,article#presentation > svg > foreignObject > section ol ol ol,article#presentation > svg > foreignObject > section ol ul ol,article#presentation > svg > foreignObject > section ul ol ol,article#presentation > svg > foreignObject > section ul ul ol{list-style-type:lower-alpha}article#presentation > svg > foreignObject > section .markdown-body dd,article#presentation > svg > foreignObject > section dd{margin-left:0}article#presentation > svg > foreignObject > section .markdown-body code,article#presentation > svg > foreignObject > section .markdown-body pre,article#presentation > svg > foreignObject > section code,article#presentation > svg > foreignObject > section pre{font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;font-size:12px}article#presentation > svg > foreignObject > section .markdown-body pre,article#presentation > svg > foreignObject > section pre{margin-top:0;margin-bottom:0}article#presentation > svg > foreignObject > section .markdown-body .octicon,article#presentation > svg > foreignObject > section .octicon{vertical-align:text-bottom}article#presentation > svg > foreignObject > section .markdown-body .pl-0,article#presentation > svg > foreignObject > section .pl-0{padding-left:0!important}article#presentation > svg > foreignObject > section .markdown-body .pl-1,article#presentation > svg > foreignObject > section .pl-1{padding-left:4px!important}article#presentation > svg > foreignObject > section .markdown-body .pl-2,article#presentation > svg > foreignObject > section .pl-2{padding-left:8px!important}article#presentation > svg > foreignObject > section .markdown-body .pl-3,article#presentation > svg > foreignObject > section .pl-3{padding-left:16px!important}article#presentation > svg > foreignObject > section .markdown-body .pl-4,article#presentation > svg > foreignObject > section .pl-4{padding-left:24px!important}article#presentation > svg > foreignObject > section .markdown-body .pl-5,article#presentation > svg > foreignObject > section .pl-5{padding-left:32px!important}article#presentation > svg > foreignObject > section .markdown-body .pl-6,article#presentation > svg > foreignObject > section .pl-6{padding-left:40px!important}article#presentation > svg > foreignObject > section .markdown-body:before,article#presentation > svg > foreignObject > section:before{display:table;content:""}article#presentation > svg > foreignObject > section .markdown-body:after,article#presentation > svg > foreignObject > section:after{display:table;clear:both/* content:""; */}article#presentation > svg > foreignObject > section .markdown-body>:first-child,article#presentation > svg > foreignObject > section>:first-child{margin-top:0!important}article#presentation > svg > foreignObject > section .markdown-body>:last-child,article#presentation > svg > foreignObject > section>:last-child{margin-bottom:0!important}article#presentation > svg > foreignObject > section .markdown-body a:not([href]),article#presentation > svg > foreignObject > section a:not([href]){color:inherit;text-decoration:none}article#presentation > svg > foreignObject > section .markdown-body .anchor,article#presentation > svg > foreignObject > section .anchor{float:left;padding-right:4px;margin-left:-20px;line-height:1}article#presentation > svg > foreignObject > section .markdown-body .anchor:focus,article#presentation > svg > foreignObject > section .anchor:focus{outline:none}article#presentation > svg > foreignObject > section .markdown-body blockquote,article#presentation > svg > foreignObject > section .markdown-body dl,article#presentation > svg > foreignObject > section .markdown-body ol,article#presentation > svg > foreignObject > section .markdown-body p,article#presentation > svg > foreignObject > section .markdown-body pre,article#presentation > svg > foreignObject > section .markdown-body table,article#presentation > svg > foreignObject > section .markdown-body ul,article#presentation > svg > foreignObject > section blockquote,article#presentation > svg > foreignObject > section dl,article#presentation > svg > foreignObject > section ol,article#presentation > svg > foreignObject > section p,article#presentation > svg > foreignObject > section pre,article#presentation > svg > foreignObject > section table,article#presentation > svg > foreignObject > section ul{margin-top:0;margin-bottom:16px}article#presentation > svg > foreignObject > section .markdown-body hr,article#presentation > svg > foreignObject > section hr{height:.25em;padding:0;margin:24px 0;background-color:#e1e4e8;border:0}article#presentation > svg > foreignObject > section .markdown-body blockquote,article#presentation > svg > foreignObject > section blockquote{padding:0 1em;color:#6a737d;border-left:.25em solid #dfe2e5}article#presentation > svg > foreignObject > section .markdown-body blockquote>:first-child,article#presentation > svg > foreignObject > section blockquote>:first-child{margin-top:0}article#presentation > svg > foreignObject > section .markdown-body blockquote>:last-child,article#presentation > svg > foreignObject > section blockquote>:last-child{margin-bottom:0}article#presentation > svg > foreignObject > section .markdown-body kbd,article#presentation > svg > foreignObject > section kbd{font-size:11px;border:1px solid #c6cbd1;border-bottom-color:#959da5;box-shadow:inset 0 -1px 0 #959da5}article#presentation > svg > foreignObject > section .markdown-body h1,article#presentation > svg > foreignObject > section .markdown-body h2,article#presentation > svg > foreignObject > section .markdown-body h3,article#presentation > svg > foreignObject > section .markdown-body h4,article#presentation > svg > foreignObject > section .markdown-body h5,article#presentation > svg > foreignObject > section .markdown-body h6,article#presentation > svg > foreignObject > section h1,article#presentation > svg > foreignObject > section h2,article#presentation > svg > foreignObject > section h3,article#presentation > svg > foreignObject > section h4,article#presentation > svg > foreignObject > section h5,article#presentation > svg > foreignObject > section h6{margin-top:24px;margin-bottom:16px;font-weight:600;line-height:1.25}article#presentation > svg > foreignObject > section .markdown-body h1 .octicon-link,article#presentation > svg > foreignObject > section .markdown-body h2 .octicon-link,article#presentation > svg > foreignObject > section .markdown-body h3 .octicon-link,article#presentation > svg > foreignObject > section .markdown-body h4 .octicon-link,article#presentation > svg > foreignObject > section .markdown-body h5 .octicon-link,article#presentation > svg > foreignObject > section .markdown-body h6 .octicon-link,article#presentation > svg > foreignObject > section h1 .octicon-link,article#presentation > svg > foreignObject > section h2 .octicon-link,article#presentation > svg > foreignObject > section h3 .octicon-link,article#presentation > svg > foreignObject > section h4 .octicon-link,article#presentation > svg > foreignObject > section h5 .octicon-link,article#presentation > svg > foreignObject > section h6 .octicon-link{color:#1b1f23;vertical-align:middle;visibility:hidden}article#presentation > svg > foreignObject > section .markdown-body h1:hover .anchor,article#presentation > svg > foreignObject > section .markdown-body h2:hover .anchor,article#presentation > svg > foreignObject > section .markdown-body h3:hover .anchor,article#presentation > svg > foreignObject > section .markdown-body h4:hover .anchor,article#presentation > svg > foreignObject > section .markdown-body h5:hover .anchor,article#presentation > svg > foreignObject > section .markdown-body h6:hover .anchor,article#presentation > svg > foreignObject > section h1:hover .anchor,article#presentation > svg > foreignObject > section h2:hover .anchor,article#presentation > svg > foreignObject > section h3:hover .anchor,article#presentation > svg > foreignObject > section h4:hover .anchor,article#presentation > svg > foreignObject > section h5:hover .anchor,article#presentation > svg > foreignObject > section h6:hover .anchor{text-decoration:none}article#presentation > svg > foreignObject > section .markdown-body h1:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section .markdown-body h2:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section .markdown-body h3:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section .markdown-body h4:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section .markdown-body h5:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section .markdown-body h6:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section h1:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section h2:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section h3:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section h4:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section h5:hover .anchor .octicon-link,article#presentation > svg > foreignObject > section h6:hover .anchor .octicon-link{visibility:visible}article#presentation > svg > foreignObject > section .markdown-body h1,article#presentation > svg > foreignObject > section h1{padding-bottom:.3em;font-size:2em;border-bottom:1px solid #eaecef}article#presentation > svg > foreignObject > section .markdown-body h2,article#presentation > svg > foreignObject > section h2{padding-bottom:.3em;font-size:1.5em;border-bottom:1px solid #eaecef}article#presentation > svg > foreignObject > section .markdown-body h3,article#presentation > svg > foreignObject > section h3{font-size:1.25em}article#presentation > svg > foreignObject > section .markdown-body h4,article#presentation > svg > foreignObject > section h4{font-size:1em}article#presentation > svg > foreignObject > section .markdown-body h5,article#presentation > svg > foreignObject > section h5{font-size:.875em}article#presentation > svg > foreignObject > section .markdown-body h6,article#presentation > svg > foreignObject > section h6{font-size:.85em;color:#6a737d}article#presentation > svg > foreignObject > section .markdown-body ol,article#presentation > svg > foreignObject > section .markdown-body ul,article#presentation > svg > foreignObject > section ol,article#presentation > svg > foreignObject > section ul{padding-left:2em}article#presentation > svg > foreignObject > section .markdown-body ol ol,article#presentation > svg > foreignObject > section .markdown-body ol ul,article#presentation > svg > foreignObject > section .markdown-body ul ol,article#presentation > svg > foreignObject > section .markdown-body ul ul,article#presentation > svg > foreignObject > section ol ol,article#presentation > svg > foreignObject > section ol ul,article#presentation > svg > foreignObject > section ul ol,article#presentation > svg > foreignObject > section ul ul{margin-top:0;margin-bottom:0}article#presentation > svg > foreignObject > section .markdown-body li,article#presentation > svg > foreignObject > section li{word-wrap:break-all}article#presentation > svg > foreignObject > section .markdown-body li>p,article#presentation > svg > foreignObject > section li>p{margin-top:16px}article#presentation > svg > foreignObject > section .markdown-body li+li,article#presentation > svg > foreignObject > section li+li{margin-top:.25em}article#presentation > svg > foreignObject > section .markdown-body dl,article#presentation > svg > foreignObject > section dl{padding:0}article#presentation > svg > foreignObject > section .markdown-body dl dt,article#presentation > svg > foreignObject > section dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:600}article#presentation > svg > foreignObject > section .markdown-body dl dd,article#presentation > svg > foreignObject > section dl dd{padding:0 16px;margin-bottom:16px}article#presentation > svg > foreignObject > section .markdown-body table,article#presentation > svg > foreignObject > section table{display:block;width:100%;overflow:auto}article#presentation > svg > foreignObject > section .markdown-body table th,article#presentation > svg > foreignObject > section table th{font-weight:600}article#presentation > svg > foreignObject > section .markdown-body table td,article#presentation > svg > foreignObject > section .markdown-body table th,article#presentation > svg > foreignObject > section table td,article#presentation > svg > foreignObject > section table th{padding:6px 13px;border:1px solid #dfe2e5}article#presentation > svg > foreignObject > section .markdown-body table tr,article#presentation > svg > foreignObject > section table tr{background-color:#fff;border-top:1px solid #c6cbd1}article#presentation > svg > foreignObject > section .markdown-body table tr:nth-child(2n),article#presentation > svg > foreignObject > section table tr:nth-child(2n){background-color:#f6f8fa}article#presentation > svg > foreignObject > section .markdown-body img,article#presentation > svg > foreignObject > section img{max-width:100%;box-sizing:content-box;background-color:#fff}article#presentation > svg > foreignObject > section .markdown-body img[align=right],article#presentation > svg > foreignObject > section img[align=right]{padding-left:20px}article#presentation > svg > foreignObject > section .markdown-body img[align=left],article#presentation > svg > foreignObject > section img[align=left]{padding-right:20px}article#presentation > svg > foreignObject > section .markdown-body code,article#presentation > svg > foreignObject > section code{padding:.2em .4em;margin:0;font-size:85%;background-color:rgba(27,31,35,.05);border-radius:3px}article#presentation > svg > foreignObject > section .markdown-body pre,article#presentation > svg > foreignObject > section pre{word-wrap:normal}article#presentation > svg > foreignObject > section .markdown-body pre>code,article#presentation > svg > foreignObject > section pre>code{padding:0;margin:0;font-size:100%;word-break:normal;white-space:pre;background:transparent;border:0}article#presentation > svg > foreignObject > section .markdown-body .highlight,article#presentation > svg > foreignObject > section .highlight{margin-bottom:16px}article#presentation > svg > foreignObject > section .markdown-body .highlight pre,article#presentation > svg > foreignObject > section .highlight pre{margin-bottom:0;word-break:normal}article#presentation > svg > foreignObject > section .markdown-body .highlight pre,article#presentation > svg > foreignObject > section .markdown-body pre,article#presentation > svg > foreignObject > section .highlight pre,article#presentation > svg > foreignObject > section pre{padding:16px;overflow:auto;font-size:85%;line-height:1.45;background-color:#f6f8fa;border-radius:3px}article#presentation > svg > foreignObject > section .markdown-body pre code,article#presentation > svg > foreignObject > section pre code{display:inline;max-width:auto;padding:0;margin:0;overflow:visible;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}article#presentation > svg > foreignObject > section .markdown-body .full-commit .btn-outline:not(:disabled):hover,article#presentation > svg > foreignObject > section .full-commit .btn-outline:not(:disabled):hover{color:#005cc5;border-color:#005cc5}article#presentation > svg > foreignObject > section .markdown-body kbd,article#presentation > svg > foreignObject > section kbd{display:inline-block;padding:3px 5px;font:11px SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;line-height:10px;color:#444d56;vertical-align:middle;background-color:#fafbfc;border:1px solid #d1d5da;border-bottom-color:#c6cbd1;border-radius:3px;box-shadow:inset 0 -1px 0 #c6cbd1}article#presentation > svg > foreignObject > section .markdown-body :checked+.radio-label,article#presentation > svg > foreignObject > section :checked+.radio-label{position:relative;z-index:1;border-color:#0366d6}article#presentation > svg > foreignObject > section .markdown-body .task-list-item,article#presentation > svg > foreignObject > section .task-list-item{list-style-type:none}article#presentation > svg > foreignObject > section .markdown-body .task-list-item+.task-list-item,article#presentation > svg > foreignObject > section .task-list-item+.task-list-item{margin-top:3px}article#presentation > svg > foreignObject > section .markdown-body .task-list-item input,article#presentation > svg > foreignObject > section .task-list-item input{margin:0 .2em .25em -1.6em;vertical-align:middle}article#presentation > svg > foreignObject > section .markdown-body hr,article#presentation > svg > foreignObject > section hr{border-bottom-color:#eee}article#presentation > svg > foreignObject > section .hljs{display:block;background:#fff;padding:.5em;color:#333;overflow-x:auto}article#presentation > svg > foreignObject > section .hljs-comment,article#presentation > svg > foreignObject > section .hljs-meta{color:#969896}article#presentation > svg > foreignObject > section .hljs-emphasis,article#presentation > svg > foreignObject > section .hljs-quote,article#presentation > svg > foreignObject > section .hljs-string,article#presentation > svg > foreignObject > section .hljs-strong,article#presentation > svg > foreignObject > section .hljs-template-variable,article#presentation > svg > foreignObject > section .hljs-variable{color:#df5000}article#presentation > svg > foreignObject > section .hljs-keyword,article#presentation > svg > foreignObject > section .hljs-selector-tag,article#presentation > svg > foreignObject > section .hljs-type{color:#a71d5d}article#presentation > svg > foreignObject > section .hljs-attribute,article#presentation > svg > foreignObject > section .hljs-bullet,article#presentation > svg > foreignObject > section .hljs-literal,article#presentation > svg > foreignObject > section .hljs-symbol{color:#0086b3}article#presentation > svg > foreignObject > section .hljs-name,article#presentation > svg > foreignObject > section .hljs-section{color:#63a35c}article#presentation > svg > foreignObject > section .hljs-tag{color:#333}article#presentation > svg > foreignObject > section .hljs-attr,article#presentation > svg > foreignObject > section .hljs-selector-attr,article#presentation > svg > foreignObject > section .hljs-selector-class,article#presentation > svg > foreignObject > section .hljs-selector-id,article#presentation > svg > foreignObject > section .hljs-selector-pseudo,article#presentation > svg > foreignObject > section .hljs-title{color:#795da3}article#presentation > svg > foreignObject > section .hljs-addition{color:#55a532;background-color:#eaffea}article#presentation > svg > foreignObject > section .hljs-deletion{color:#bd2c00;background-color:#ffecec}article#presentation > svg > foreignObject > section .hljs-link{text-decoration:underline}article#presentation > svg > foreignObject > section svg[data-marp-fitting=svg]{max-height:563px}article#presentation > svg > foreignObject > section h1{color:#246;font-size:1.6em}article#presentation > svg > foreignObject > section h1,article#presentation > svg > foreignObject > section h2{border-bottom:none}article#presentation > svg > foreignObject > section h2{font-size:1.3em}article#presentation > svg > foreignObject > section h3{font-size:1.1em}article#presentation > svg > foreignObject > section h4{font-size:1.05em}article#presentation > svg > foreignObject > section h5{font-size:1em}article#presentation > svg > foreignObject > section h6{font-size:.9em}article#presentation > svg > foreignObject > section hr{height:0;padding-top:.25em}article#presentation > svg > foreignObject > section pre{border:1px solid #999;line-height:1.15}article#presentation > svg > foreignObject > section pre code svg[data-marp-fitting=svg]{max-height:529px}article#presentation > svg > foreignObject > section footer,article#presentation > svg > foreignObject > section header{margin:0;position:absolute;left:30px;color:hsla(0,0%,40%,.75);font-size:18px}article#presentation > svg > foreignObject > section header{top:21px}article#presentation > svg > foreignObject > section footer{bottom:21px}article#presentation > svg > foreignObject > section{align-items:stretch;background:#fff;display:flex;flex-direction:column;flex-wrap:nowrap;font-size:29px;height:720px;justify-content:center;padding:78.5px;width:1280px}article#presentation > svg > foreignObject > section>:last-child,article#presentation > svg > foreignObject > section[data-footer]>:nth-last-child(2){margin-bottom:0}article#presentation > svg > foreignObject > section>:first-child,article#presentation > svg > foreignObject > section>header:first-child+*{margin-top:0}article#presentation > svg > foreignObject > section:after{position:absolute;padding:0;right:30px;bottom:21px;font-size:24px;color:#777}article#presentation > svg > foreignObject > section.invert{background-color:#222;color:#e6eaf0}article#presentation > svg > foreignObject > section.invert:after{color:#999}article#presentation > svg > foreignObject > section.invert img{background-color:transparent}article#presentation > svg > foreignObject > section.invert a{color:#50b3ff}article#presentation > svg > foreignObject > section.invert h1{color:#a3c5e7}article#presentation > svg > foreignObject > section.invert h2,article#presentation > svg > foreignObject > section.invert h3,article#presentation > svg > foreignObject > section.invert h4,article#presentation > svg > foreignObject > section.invert h5{color:#ebeff5}article#presentation > svg > foreignObject > section.invert blockquote,article#presentation > svg > foreignObject > section.invert h6{border-color:#3d3f43;color:#939699}article#presentation > svg > foreignObject > section.invert hr{background-color:#3d3f43}article#presentation > svg > foreignObject > section.invert footer,article#presentation > svg > foreignObject > section.invert header{color:hsla(0,0%,60%,.75)}article#presentation > svg > foreignObject > section.invert code,article#presentation > svg > foreignObject > section.invert kbd{background-color:#111}article#presentation > svg > foreignObject > section.invert kbd{border-color:#666;box-shadow:inset 0 -1px 0 #555;color:#e6eaf0}article#presentation > svg > foreignObject > section.invert table tr{background-color:#12181d;border-color:#60657b}article#presentation > svg > foreignObject > section.invert table tr:nth-child(2n){background-color:#1b2024}article#presentation > svg > foreignObject > section.invert table td,article#presentation > svg > foreignObject > section.invert table th{border-color:#5b5e61}article#presentation > svg > foreignObject > section.invert pre{background-color:#0a0e12;border-color:#777}article#presentation > svg > foreignObject > section.invert pre code{background-color:transparent}article#presentation > svg > foreignObject > section[data-color] h1,article#presentation > svg > foreignObject > section[data-color] h2,article#presentation > svg > foreignObject > section[data-color] h3,article#presentation > svg > foreignObject > section[data-color] h4,article#presentation > svg > foreignObject > section[data-color] h5,article#presentation > svg > foreignObject > section[data-color] h6{color:currentColor}article#presentation > svg > foreignObject > section[data-marpit-advanced-background="background"] {
+  padding: 0 !important;
+}article#presentation > svg > foreignObject > section[data-marpit-advanced-background="background"]::before,
+article#presentation > svg > foreignObject > section[data-marpit-advanced-background="background"]::after,
+article#presentation > svg > foreignObject > section[data-marpit-advanced-background="content"]::before,
+article#presentation > svg > foreignObject > section[data-marpit-advanced-background="content"]::after {
+  display: none !important;
+}article#presentation > svg > foreignObject > section[data-marpit-advanced-background="background"] > div[data-marpit-advanced-background-container] {
+  all: initial;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+}article#presentation > svg > foreignObject > section[data-marpit-advanced-background="background"][data-marpit-advanced-background-split] > div[data-marpit-advanced-background-container] {
+  width: 50%;
+}article#presentation > svg > foreignObject > section[data-marpit-advanced-background="background"][data-marpit-advanced-background-split="right"] > div[data-marpit-advanced-background-container] {
+  margin-left: 50%;
+}article#presentation > svg > foreignObject > section[data-marpit-advanced-background="background"] > div[data-marpit-advanced-background-container] > figure {
+  all: initial;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  flex: auto;
+  margin: 0;
+}article#presentation > svg > foreignObject > section[data-marpit-advanced-background="content"],
+article#presentation > svg > foreignObject > section[data-marpit-advanced-background="pseudo"] {
+  background: transparent !important;
+}article#presentation > svg > foreignObject > section[data-marpit-advanced-background="pseudo"],
+article#presentation > svg > foreignObject[data-marpit-advanced-background="pseudo"] {
+  pointer-events: none !important;
+}article#presentation > svg > foreignObject > section[data-marpit-advanced-background-split] {
+  width: 100%;
+  height: 100%;
+}</style></head><body><article id="presentation"><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="1" data-paginate="true" data-marpit-pagination="1" style="--paginate:true;">
+<h1>Parser combinators</h1>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="2" data-paginate="true" data-marpit-pagination="2" style="--paginate:true;">
+<h2>Parsing is HARD</h2>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="3" data-paginate="true" data-marpit-pagination="3" style="--paginate:true;">
+<h1>Available tools</h1>
+<ul>
+<li>PEG: Parsing expression grammar</li>
+<li>yacc/bison, often used with lex/flex
+<ul>
+<li>camllex, camlyacc</li>
+<li>FsLexYacc</li>
+</ul>
+</li>
+<li>ANTLR</li>
+</ul>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="4" data-paginate="true" data-marpit-pagination="4" style="--paginate:true;">
+<h1>How to write your own toy parser combinator</h1>
+<p>It <strong>really</strong> helps if your language has functions as first-class citizens</p>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="5" data-paginate="true" data-marpit-pagination="5" style="--paginate:true;">
+<h1>First, a context object that will be threaded along</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Context</span> </span>= {
+    Text: string
+    Index: int
+}
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="6" data-paginate="true" data-marpit-pagination="6" style="--paginate:true;">
+<h1>Second, a way to identify the result of applying a parser</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Success</span>&lt;<span class="hljs-title">'value</span>&gt; </span>= {
+    Value: 'value
+    Context: Context
+}
+
+<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Failure</span> </span>= {
+    Expected: string
+    Context: Context
+}
+
+<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Result</span>&lt;<span class="hljs-title">'value</span>&gt; </span>=
+    | Success <span class="hljs-keyword">of</span> Success&lt;'value&gt;
+    | Failure <span class="hljs-keyword">of</span> Failure
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="7" data-paginate="true" data-marpit-pagination="7" style="--paginate:true;">
+<h1>Finally, our parser definition and a way to run it</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Parser</span>&lt;<span class="hljs-title">'value</span>&gt; </span>= (Context -&gt; Result&lt;'value&gt;)
+
+<span class="hljs-keyword">let</span> run parser input =
+    <span class="hljs-keyword">let</span> ctx = { Text = input; Index = <span class="hljs-number">0</span> }
+    parser ctx
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="8" data-paginate="true" data-marpit-pagination="8" style="--paginate:true;">
+<h1>Let's try parsing some texts</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"parsec"</span>
+|&gt; run <span class="hljs-comment">(* ??? *)</span> 
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="9" data-paginate="true" data-marpit-pagination="9" style="--paginate:true;">
+<h1>Parsing a string</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> str expected =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">let</span> length = String.length expected
+        <span class="hljs-keyword">let</span> fits = ctx.Index + length &lt;= String.length ctx.Text
+        <span class="hljs-keyword">if</span> fits &amp;&amp; ctx.Text.Substring(ctx.Index, length) = expected <span class="hljs-keyword">then</span>
+            Success {
+                Value = expected
+                Context = { ctx <span class="hljs-keyword">with</span> Index = ctx.Index + length }
+            }
+        <span class="hljs-keyword">else</span>
+            Failure {
+                Expected = expected
+                Context = ctx
+            }
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="10" data-paginate="true" data-marpit-pagination="10" style="--paginate:true;">
+<h1>Parsing a single string</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"parsec"</span>
+|&gt; run (str <span class="hljs-string">"parsec"</span>) 
+<span class="hljs-comment">// Success: parsec</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="11" data-paginate="true" data-marpit-pagination="11" style="--paginate:true;">
+<h1>Parsing more strings?</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"parser combinators are awesome"</span>
+|&gt; run (str <span class="hljs-string">"parser combinators are awesome"</span>) 
+<span class="hljs-comment">// Success: parser combinators are awesome</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="12" data-paginate="true" data-marpit-pagination="12" style="--paginate:true;">
+<h1>Kind of boring</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"parser combinator are awesome"</span>
+|&gt; run (str <span class="hljs-string">"parser combinators are awesome"</span>)
+<span class="hljs-comment">// Failure: Expecting parser combinators are awesome</span>
+<span class="hljs-comment">// parser combinator are awesome</span>
+<span class="hljs-comment">// ^</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="13" data-paginate="true" data-marpit-pagination="13" style="--paginate:true;">
+<h1>Combination</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> (&gt;&gt;.) parserA parserB =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">match</span> parserA ctx <span class="hljs-keyword">with</span>
+        | Success success -&gt; parserB success.Context
+        | Failure failure -&gt; Failure failure
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="14" data-paginate="true" data-marpit-pagination="14" style="--paginate:true;">
+<h1>Parsing multiple strings</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> parser = str <span class="hljs-string">"parser"</span>
+<span class="hljs-keyword">let</span> space = str <span class="hljs-string">" "</span>
+<span class="hljs-keyword">let</span> combinators = str <span class="hljs-string">"combinators"</span>
+<span class="hljs-keyword">let</span> are = str <span class="hljs-string">"are"</span>
+<span class="hljs-keyword">let</span> awesome = str <span class="hljs-string">"awesome"</span>
+
+<span class="hljs-keyword">let</span> together =
+    (parser &gt;&gt;. space &gt;&gt;. combinators &gt;&gt;. space &gt;&gt;. are &gt;&gt;. space &gt;&gt;. awesome)
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="15" data-paginate="true" data-marpit-pagination="15" style="--paginate:true;">
+<h1>Success</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"parser combinators are awesome"</span>
+|&gt; run together 
+<span class="hljs-comment">// Success: awesome</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="16" data-paginate="true" data-marpit-pagination="16" style="--paginate:true;">
+<h1>Failure</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"parser combinator are awesome"</span>
+|&gt; run together 
+<span class="hljs-comment">// Failure: Expecting combinators</span>
+<span class="hljs-comment">// parser combinator are awesome</span>
+<span class="hljs-comment">//        ^</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="17" data-paginate="true" data-marpit-pagination="17" style="--paginate:true;">
+<h1>Parsing DNA</h1>
+<p>The four bases:</p>
+<ul>
+<li>Adenine</li>
+<li>Thymine</li>
+<li>Cytosine</li>
+<li>Guanine</li>
+</ul>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="18" data-paginate="true" data-marpit-pagination="18" style="--paginate:true;">
+<h1>Parsing DNA</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"a"</span>
+|&gt; run (str <span class="hljs-string">"a"</span>) 
+<span class="hljs-comment">// Success: a</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="19" data-paginate="true" data-marpit-pagination="19" style="--paginate:true;">
+<h1>Alternatives</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> (&lt;|&gt;) parserA parserB =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">match</span> parserA ctx <span class="hljs-keyword">with</span>
+        | Success successA -&gt; Success successA
+        | Failure failureA -&gt;
+            <span class="hljs-keyword">if</span> failureA.Context.Index &lt;&gt; ctx.Index <span class="hljs-keyword">then</span>
+                Failure failureA
+            <span class="hljs-keyword">else</span>
+                <span class="hljs-keyword">match</span> parserB ctx <span class="hljs-keyword">with</span>
+                | Success successB -&gt; Success successB
+                | Failure failureB -&gt;
+                    Failure {
+                        Expected = sprintf <span class="hljs-string">"%s or %s"</span> failureA.Expected failureB.Expected
+                        Context = failureB.Context
+                    }
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="20" data-paginate="true" data-marpit-pagination="20" style="--paginate:true;">
+<h1>Parsing DNA</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"g"</span>
+|&gt; run (str <span class="hljs-string">"a"</span> &lt;|&gt; str <span class="hljs-string">"t"</span> &lt;|&gt; str <span class="hljs-string">"c"</span> &lt;|&gt; str <span class="hljs-string">"g"</span>) 
+<span class="hljs-comment">// Success: g</span>
+
+<span class="hljs-string">"y"</span>
+|&gt; run (str <span class="hljs-string">"a"</span> &lt;|&gt; str <span class="hljs-string">"t"</span> &lt;|&gt; str <span class="hljs-string">"c"</span> &lt;|&gt; str <span class="hljs-string">"g"</span>) 
+<span class="hljs-comment">// Failure: Expecting a or t or c or g</span>
+<span class="hljs-comment">// y</span>
+<span class="hljs-comment">// ^</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="21" data-paginate="true" data-marpit-pagination="21" style="--paginate:true;">
+<h1>Mapping</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Molecule</span> </span>=
+    | A
+    | T
+    | C
+    | G
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="22" data-paginate="true" data-marpit-pagination="22" style="--paginate:true;">
+<h1>Mapping function</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> (|&gt;&gt;) parser f =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">match</span> parser ctx <span class="hljs-keyword">with</span>
+        | Success success -&gt;
+            Success {
+                Value = f success.Value
+                Context = success.Context
+            }
+        | Failure failure -&gt; Failure failure
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="23" data-paginate="true" data-marpit-pagination="23" style="--paginate:true;">
+<h1>Parsing a molecule</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> a = str <span class="hljs-string">"a"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; A
+<span class="hljs-keyword">let</span> t = str <span class="hljs-string">"t"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; T
+<span class="hljs-keyword">let</span> c = str <span class="hljs-string">"c"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; C
+<span class="hljs-keyword">let</span> g = str <span class="hljs-string">"g"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; G
+<span class="hljs-keyword">let</span> molecule = a &lt;|&gt; t &lt;|&gt; c &lt;|&gt; g
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="24" data-paginate="true" data-marpit-pagination="24" style="--paginate:true;">
+<h1>DNA Sequence</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"agtgcgttac"</span>
+|&gt; run <span class="hljs-comment">(* ??? *)</span> 
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="25" data-paginate="true" data-marpit-pagination="25" style="--paginate:true;">
+<h1>Sequence</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> many parser =
+    <span class="hljs-keyword">let</span> <span class="hljs-keyword">rec</span> loop parser acc =
+        (<span class="hljs-keyword">fun</span> ctx -&gt;
+            <span class="hljs-keyword">match</span> parser ctx <span class="hljs-keyword">with</span>
+            | Success success -&gt; 
+                loop parser (success.Value :: acc) success.Context
+            | Failure failure -&gt; 
+                <span class="hljs-keyword">if</span> failure.Context.Index &lt;&gt; ctx.Index <span class="hljs-keyword">then</span>
+                    Failure failure
+                <span class="hljs-keyword">else</span>
+                    Success {
+                        Value = List.rev acc
+                        Context = failure.Context
+                    }
+        )
+    loop parser []
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="26" data-paginate="true" data-marpit-pagination="26" style="--paginate:true;">
+<h1>DNA Sequence</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"agtgcgttac"</span>
+|&gt; run (many molecule) 
+<span class="hljs-comment">// Success: [A; G; T; G; C; G; T; T; A; C]</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="27" data-paginate="true" data-marpit-pagination="27" style="--paginate:true;">
+<h1>DNA mutation</h1>
+<p>Somewhere in the OCA2, there is a single gene mutation that tells you if you'll have blue or brown eyes.</p>
+<ul>
+<li>TAA<strong>G</strong>TG = blue eyes</li>
+<li>TAA<strong>A</strong>TG = brown eyes</li>
+</ul>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">EyeColor</span> </span>=
+    | Blue
+    | Brown
+
+<span class="hljs-keyword">let</span> blue = t &gt;&gt;. a &gt;&gt;. a &gt;&gt;. g &gt;&gt;. t &gt;&gt;. g |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; Blue
+<span class="hljs-keyword">let</span> brown = t &gt;&gt;. a &gt;&gt;. a &gt;&gt;. a &gt;&gt;. t &gt;&gt;. g |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; Brown
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="28" data-paginate="true" data-marpit-pagination="28" style="--paginate:true;">
+<h1>Easy, we know how to deal with alternatives</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"taagtg"</span>
+|&gt; run (blue &lt;|&gt; brown) 
+<span class="hljs-comment">// Success: Blue</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="29" data-paginate="true" data-marpit-pagination="29" style="--paginate:true;">
+<h1>But why</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"taaatg"</span>
+|&gt; run (blue &lt;|&gt; brown) 
+<span class="hljs-comment">// Failure: Expecting g</span>
+<span class="hljs-comment">// taaatg</span>
+<span class="hljs-comment">//    ^</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="30" data-paginate="true" data-marpit-pagination="30" style="--paginate:true;">
+<h1>Backtracking</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> attempt parser =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">match</span> parser ctx <span class="hljs-keyword">with</span>
+        | Failure _ -&gt; Failure { Expected = <span class="hljs-string">""</span>; Context = ctx }
+        | Success success -&gt; Success success
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="31" data-paginate="true" data-marpit-pagination="31" style="--paginate:true;">
+<h1>Works now</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"taaatg"</span>
+|&gt; run (attempt blue &lt;|&gt; brown) 
+<span class="hljs-comment">// Success: Brown</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="32" data-paginate="true" data-marpit-pagination="32" style="--paginate:true;">
+<h1>Custom error messages</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> (&lt;?&gt;) parser expected =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">match</span> parser ctx <span class="hljs-keyword">with</span>
+        | Success success -&gt; Success success
+        | Failure failure -&gt;
+            Failure { failure <span class="hljs-keyword">with</span> Expected = expected }
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="33" data-paginate="true" data-marpit-pagination="33" style="--paginate:true;">
+<h1>Helpful</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> blue = blue &lt;?&gt; <span class="hljs-string">"In the middle of parsing Blue"</span>
+<span class="hljs-keyword">let</span> brown = brown &lt;?&gt; <span class="hljs-string">"In the middle of parsing Brown"</span>
+
+<span class="hljs-string">"taaatg"</span>
+|&gt; run (blue &lt;|&gt; brown) 
+<span class="hljs-comment">// Failure: In the middle of parsing Blue</span>
+<span class="hljs-comment">// taaatg</span>
+<span class="hljs-comment">//    ^</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="34" data-paginate="true" data-marpit-pagination="34" style="--paginate:true;">
+<h1>More useful, a state machine</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Context</span>&lt;<span class="hljs-title">'state</span>&gt; </span>= {
+    State: 'state
+    Text: string
+    Index: int
+}
+
+<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Success</span>&lt;<span class="hljs-title">'value</span>, <span class="hljs-title">'state</span>&gt; </span>= {
+    Value: 'value
+    Context: Context&lt;'state&gt;
+}
+
+<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Failure</span>&lt;<span class="hljs-title">'state</span>&gt; </span>= {
+    Expected: string
+    Context: Context&lt;'state&gt;
+}
+
+<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Result</span>&lt;<span class="hljs-title">'value</span>, <span class="hljs-title">'state</span>&gt; </span>=
+    | Success <span class="hljs-keyword">of</span> Success&lt;'value, 'state&gt;
+    | Failure <span class="hljs-keyword">of</span> Failure&lt;'state&gt;
+
+<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Parser</span>&lt;<span class="hljs-title">'value</span>, <span class="hljs-title">'state</span>&gt; </span>= (Context&lt;'state&gt; -&gt; Result&lt;'value, 'state&gt;)
+
+<span class="hljs-keyword">let</span> run init parser text =
+    <span class="hljs-keyword">let</span> ctx = { State = init; Text = text; Index = <span class="hljs-number">0</span> }
+    parser ctx 
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="35" data-paginate="true" data-marpit-pagination="35" style="--paginate:true;">
+<h1>Useful functions</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> getState =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        Success { 
+            Value = ctx.State
+            Context = ctx
+        }
+    )
+
+<span class="hljs-keyword">let</span> setState state =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        Success {
+            Value = ()
+            Context = { ctx <span class="hljs-keyword">with</span> State = state }
+        }
+    )
+
+<span class="hljs-keyword">let</span> updateState f =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        Success {
+            Value = ()
+            Context = { ctx <span class="hljs-keyword">with</span> State = f ctx.State }
+        }
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="36" data-paginate="true" data-marpit-pagination="36" style="--paginate:true;">
+<h1>New example: Balancing parenthesis</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">State</span> </span>=
+    | Empty
+    | Paren <span class="hljs-keyword">of</span> int
+
+<span class="hljs-keyword">let</span> addParen = <span class="hljs-keyword">function</span>
+    | Empty -&gt; Paren <span class="hljs-number">1</span>
+    | Paren n -&gt; Paren (n + <span class="hljs-number">1</span>)
+
+<span class="hljs-keyword">let</span> remParen = <span class="hljs-keyword">function</span>
+    | Empty -&gt; Paren (<span class="hljs-number">-1</span>)
+    | Paren n -&gt; Paren (n - <span class="hljs-number">1</span>)
+
+<span class="hljs-keyword">let</span> parseParens =
+    (str <span class="hljs-string">"("</span> &gt;&gt;. updateState addParen)
+    &lt;|&gt; (str <span class="hljs-string">")"</span> &gt;&gt;. updateState remParen)
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="37" data-paginate="true" data-marpit-pagination="37" style="--paginate:true;">
+<h1>Let's try it</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"((()))()())))))((("</span>
+|&gt; run Empty (many parseParens &gt;&gt;. getState) 
+<span class="hljs-comment">// Success: Paren -2</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="38" data-paginate="true" data-marpit-pagination="38" style="--paginate:true;">
+<h1>Making a parser depend on a state</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> stateSatisfies f = 
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">if</span> f ctx.State <span class="hljs-keyword">then</span> 
+            Success {
+                Value = ()
+                Context = ctx
+            }
+        <span class="hljs-keyword">else</span>
+            Failure {
+                Expected = <span class="hljs-string">"User state mismatch"</span>
+                Context = ctx
+            }
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="39" data-paginate="true" data-marpit-pagination="39" style="--paginate:true;">
+<h1>Let's make sure it's valid</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> isEmpty = <span class="hljs-keyword">function</span>
+    | Empty -&gt; <span class="hljs-keyword">true</span>
+    | Paren <span class="hljs-number">0</span> -&gt; <span class="hljs-keyword">true</span>
+    | _ -&gt; <span class="hljs-keyword">false</span>
+
+<span class="hljs-string">"((()))()())))))((("</span>
+|&gt; run Empty (many parseParens &gt;&gt;. stateSatisfies isEmpty) 
+<span class="hljs-comment">// Failure: User state mismatch</span>
+<span class="hljs-comment">// State = Paren -2</span>
+<span class="hljs-comment">// ((()))()())))))(((</span>
+<span class="hljs-comment">//                   ^</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="40" data-paginate="true" data-marpit-pagination="40" style="--paginate:true;">
+<h1>Now it is</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"((()))()())))))((((("</span>
+|&gt; run Empty (many parseParens &gt;&gt;. stateSatisfies isEmpty) 
+<span class="hljs-comment">// Success: ()</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="41" data-paginate="true" data-marpit-pagination="41" style="--paginate:true;">
+<h1>Left recursion</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Expr</span> </span>=
+    | A
+    | B
+    | List <span class="hljs-keyword">of</span> Expr list
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="42" data-paginate="true" data-marpit-pagination="42" style="--paginate:true;">
+<h1>Parsing it</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> parseA = str <span class="hljs-string">"a"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; A
+<span class="hljs-keyword">let</span> parseB = str <span class="hljs-string">"b"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; B
+<span class="hljs-keyword">let</span> parseList = sepBy1 parseExpr (str <span class="hljs-string">" "</span>) |&gt;&gt; List
+<span class="hljs-keyword">let</span> parseExpr = parseList &lt;|&gt; parseA &lt;|&gt; parseB
+
+<span class="hljs-string">"a"</span>
+|&gt; run parseExpr
+<span class="hljs-comment">// Stack overflow</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="43" data-paginate="true" data-marpit-pagination="43" style="--paginate:true;">
+<h1>Parsing it ... again</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> parseA = str <span class="hljs-string">"a"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; A
+<span class="hljs-keyword">let</span> parseB = str <span class="hljs-string">"b"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; B
+<span class="hljs-keyword">let</span> parseList = sepBy1 parseExpr (str <span class="hljs-string">" "</span>) |&gt;&gt; List
+<span class="hljs-keyword">let</span> parseExpr = parseA &lt;|&gt; parseB &lt;|&gt; parseList
+
+<span class="hljs-string">"a"</span>
+|&gt; run parseExpr
+<span class="hljs-comment">// Success: A</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="44" data-paginate="true" data-marpit-pagination="44" style="--paginate:true;">
+<h1>Let's try a list</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"a b"</span>
+|&gt; run parseExpr
+<span class="hljs-comment">// Success: A</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="45" data-paginate="true" data-marpit-pagination="45" style="--paginate:true;">
+<h1>Ugh, let's reverse again?</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> parseA = str <span class="hljs-string">"a"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; A
+<span class="hljs-keyword">let</span> parseB = str <span class="hljs-string">"b"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; B
+<span class="hljs-keyword">let</span> parseList = sepBy1 parseExpr (str <span class="hljs-string">" "</span>) |&gt;&gt; List
+<span class="hljs-keyword">let</span> parseExpr = parseList &lt;|&gt; parseA &lt;|&gt; parseB
+
+<span class="hljs-string">"a b"</span>
+|&gt; run parseExpr
+<span class="hljs-comment">// Stack overflow</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="46" data-paginate="true" data-marpit-pagination="46" style="--paginate:true;">
+<h1>Left recursion</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> parseA = str <span class="hljs-string">"a"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; A
+<span class="hljs-keyword">let</span> parseB = str <span class="hljs-string">"b"</span> |&gt;&gt; <span class="hljs-keyword">fun</span> _ -&gt; B
+<span class="hljs-keyword">let</span> parseValue = parseA &lt;|&gt; parseB
+<span class="hljs-keyword">let</span> parseExpr =
+    sepBy1 parseValue (str <span class="hljs-string">" "</span>)
+    |&gt;&gt; <span class="hljs-keyword">fun</span> exprs -&gt;
+        <span class="hljs-keyword">match</span> exprs <span class="hljs-keyword">with</span>
+        | [expr] -&gt; expr <span class="hljs-comment">// Value: A or B</span>
+        | _ -&gt; List exprs
+
+<span class="hljs-string">"a"</span>
+|&gt; run parseExpr
+<span class="hljs-comment">// Success: A</span>
+
+<span class="hljs-string">"a b"</span>
+|&gt; run parseExpr
+<span class="hljs-comment">// Success: List [A; B]</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="47" data-paginate="true" data-marpit-pagination="47" style="--paginate:true;">
+<h1>New example: List of integers</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"[1,2,3]"</span>
+|&gt; run <span class="hljs-comment">(* ??? *)</span> 
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="48" data-paginate="true" data-marpit-pagination="48" style="--paginate:true;">
+<h1>More helpers : parsing integers</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> anyOf chars =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">let</span> char = ctx.Text.[ctx.Index]
+        <span class="hljs-keyword">match</span> Seq.tryFind (<span class="hljs-keyword">fun</span> c -&gt; c = char) chars <span class="hljs-keyword">with</span>
+        | Some found -&gt;
+            Success {
+                Value = found
+                Context = { ctx <span class="hljs-keyword">with</span> Index = ctx.Index + <span class="hljs-number">1</span> }
+            }
+        | None -&gt;
+            Failure {
+                Expected = sprintf <span class="hljs-string">"Any of these: '%O'"</span> chars
+                Context = ctx
+            }
+)
+
+<span class="hljs-keyword">let</span> many1 parser =
+    <span class="hljs-keyword">let</span> <span class="hljs-keyword">rec</span> loop parser acc =
+        (<span class="hljs-keyword">fun</span> ctx -&gt;
+            <span class="hljs-keyword">match</span> parser ctx <span class="hljs-keyword">with</span>
+            | Success success -&gt; 
+                loop parser (success.Value :: acc) success.Context
+            | Failure failure -&gt; 
+                <span class="hljs-keyword">if</span> failure.Context.Index &lt;&gt; ctx.Index <span class="hljs-keyword">then</span>
+                    Failure failure
+                <span class="hljs-keyword">elif</span> List.isEmpty acc <span class="hljs-keyword">then</span>
+                    Failure failure
+                <span class="hljs-keyword">else</span>
+                    Success {
+                        Value = List.rev acc
+                        Context = failure.Context
+                    }
+        )
+    loop parser []
+
+
+<span class="hljs-keyword">let</span> parseInt = 
+    many1 (anyOf <span class="hljs-string">"1234567890"</span>)
+    |&gt;&gt; (<span class="hljs-keyword">fun</span> numbers -&gt;
+        int(String(Array.ofList(numbers)))
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="49" data-paginate="true" data-marpit-pagination="49" style="--paginate:true;">
+<h1>More helpers : some old friends</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> (.&gt;&gt;) parserA parserB =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">match</span> parserA ctx <span class="hljs-keyword">with</span>
+        | Success successA -&gt; 
+            <span class="hljs-keyword">match</span> parserB successA.Context <span class="hljs-keyword">with</span>
+            | Success successB -&gt; Success { Value = successA.Value; Context = successB.Context }
+            | Failure failure -&gt; Failure failure
+        | Failure failure -&gt; Failure failure
+    )
+
+<span class="hljs-keyword">let</span> (.&gt;&gt;.) parserA parserB =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">match</span> parserA ctx <span class="hljs-keyword">with</span>
+        | Success successA -&gt;
+            <span class="hljs-keyword">match</span> parserB successA.Context <span class="hljs-keyword">with</span>
+            | Success successB -&gt; Success { Value = (successA.Value, successB.Value); Context = successB.Context }
+            | Failure failure -&gt; Failure failure
+        | Failure failure -&gt; Failure failure
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="50" data-paginate="true" data-marpit-pagination="50" style="--paginate:true;">
+<h1>More helpers : recurring patterns</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> between parserL parserR parser =
+    parserL &gt;&gt;. parser .&gt;&gt; parserR
+
+<span class="hljs-keyword">let</span> sepBy1 parser parserSep =
+    parser .&gt;&gt;. (many (parserSep &gt;&gt;. parser))
+    |&gt;&gt; <span class="hljs-keyword">fun</span> (x, xs) -&gt; x :: xs
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="51" data-paginate="true" data-marpit-pagination="51" style="--paginate:true;">
+<h1>Let's parse this</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"[1,2,3]"</span>
+|&gt; run (between (str <span class="hljs-string">"["</span>) (str <span class="hljs-string">"]"</span>) (sepBy1 parseInt (str <span class="hljs-string">","</span>))) 
+<span class="hljs-comment">// Success: [1; 2; 3]</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="52" data-paginate="true" data-marpit-pagination="52" style="--paginate:true;">
+<h1>Someone ruins everything</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-string">"[1, 2, 3]"</span>
+|&gt; run (between (str <span class="hljs-string">"["</span>) (str <span class="hljs-string">"]"</span>) (sepBy1 parseInt (str <span class="hljs-string">","</span>))) 
+<span class="hljs-comment">// Failure: Expecting Any of these: '1234567890'</span>
+<span class="hljs-comment">// [1, 2, 3]</span>
+<span class="hljs-comment">//    ^</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="53" data-paginate="true" data-marpit-pagination="53" style="--paginate:true;">
+<h1>Now it works</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> ws = many (str <span class="hljs-string">" "</span>)
+
+<span class="hljs-string">"[ 1,2, 3 ]"</span>
+|&gt; run (between (str <span class="hljs-string">"["</span> &gt;&gt;. ws) (str <span class="hljs-string">"]"</span> &gt;&gt;. ws) (sepBy1 (parseInt .&gt;&gt; ws) (str <span class="hljs-string">","</span> &gt;&gt;. ws))) 
+<span class="hljs-comment">// Success: [1; 2; 3]</span>
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="54" data-paginate="true" data-marpit-pagination="54" style="--paginate:true;">
+<p><img src="img/hard.jpg" alt="" /></p>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="55" data-paginate="true" data-marpit-pagination="55" style="--paginate:true;">
+<h1>TEST ... YOUR ... PARSERS</h1>
+<pre><code class="language-fsharp"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">let</span> eof =
+    (<span class="hljs-keyword">fun</span> ctx -&gt;
+        <span class="hljs-keyword">if</span> ctx.Index = String.length ctx.Text - <span class="hljs-number">1</span> <span class="hljs-keyword">then</span>
+            Success {
+                Value = ()
+                Context = ctx
+            }
+        <span class="hljs-keyword">else</span>
+            Failure {
+                Expected = <span class="hljs-string">"eof"</span>
+                Context = ctx
+            }
+    )
+</span></span></foreignObject></svg></code></pre>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="56" data-paginate="true" data-marpit-pagination="56" style="--paginate:true;">
+<h1>Trivial things to add</h1>
+<ul>
+<li>Location instead of index, useful for files</li>
+<li>Where's my monad!??</li>
+<li>Separate expected from error message</li>
+</ul>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="57" data-paginate="true" data-marpit-pagination="57" style="--paginate:true;">
+<h1>Warning: This isn't optimized</h1>
+<p>In the past, the relatively poor performance of parser combinator libraries has often been cited as the primary impediment to their more widespread adoption. For this reason optimal performance stood front and center as a design goal during the development of FParsec and a lot of effort has been spent on optimizing parsing speed. As a result, <strong>FParsec has become so fast that parsers implemented with FParsec often significantly outperform parsers created by parser generator tools like fslex &amp; fsyacc</strong>.</p>
+<p><strong>In general, a parser implemented in FParsec can get close to the performance of a hand‐optimized recursive‐descent parser written in C#</strong>. Due to the multi‐layered architecture of the FParsec API, you always have the option to fall back to the lower‐level API should a particular parser component implemented with the high‐level API turn out to be too slow. Hence, if you choose FParsec for implementing your parsers, you don’t have to worry that performance will become a reason for switching away from FParsec.</p>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="58" data-paginate="true" data-marpit-pagination="58" style="--paginate:true;">
+<h1>Performance guidelines</h1>
+<ul>
+<li>Avoid backtracking</li>
+<li>Prefer specialized parsers
+<ul>
+<li>skip</li>
+<li>builtin</li>
+</ul>
+</li>
+<li>Construct parsers once</li>
+<li>Avoid <code>parse {...}</code> expressions</li>
+<li>Avoid <code>regex</code> parsers</li>
+<li>Consider optimizing large <code>choice</code> parsers</li>
+</ul>
+<p>Source: <a href="https://www.quanttec.com/fparsec/users-guide/performance-optimizations.html">https://www.quanttec.com/fparsec/users-guide/performance-optimizations.html</a></p>
+</section>
+</foreignObject></svg><svg viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="59" data-paginate="true" data-marpit-pagination="59" style="--paginate:true;">
+<h1>Okay, I rambled long enough</h1>
+<p>Give parser combinators another try</p>
+</section>
+</foreignObject></svg></article><script>!function(){"use strict";const t="data-marp-fitting",e="data-marp-fitting-code",i="data-marp-fitting-math",a=(t,e,i)=>{if(t.getAttribute(e)!==i)return t.setAttribute(e,i),!0};!function(r=!0){!function r(n=!0){Array.from(document.querySelectorAll(`svg[${t}="svg"]`),t=>{const r=t.firstChild,n=r.firstChild,{scrollWidth:o,scrollHeight:s}=n;let l,c=1;if(t.hasAttribute(e)&&(l=t.parentElement.parentElement),t.hasAttribute(i)&&(l=t.parentElement),l){const t=getComputedStyle(l),e=Math.ceil(l.clientWidth-parseFloat(t.paddingLeft)-parseFloat(t.paddingRight));e&&(c=e)}const d=Math.max(o,c),p=Math.max(s,1),g=`0 0 ${d} ${p}`;a(r,"width",`${d}`),a(r,"height",`${p}`),a(t,"preserveAspectRatio",getComputedStyle(t).getPropertyValue("--preserve-aspect-ratio")||"xMinYMin meet"),a(t,"viewBox",g)&&t.classList.toggle("__reflow__")}),n&&window.requestAnimationFrame(()=>r(n))}(r)}()}();
+</script><script>!function(){"use strict";var e={from:function(e,t){var n=1===(e.parent||e).nodeType?e.parent||e:document.querySelector(e.parent||e),i=[].filter.call("string"==typeof e.slides?n.querySelectorAll(e.slides):e.slides||n.children,function(e){return"SCRIPT"!==e.nodeName}),o=i[0],r={},a=function(e,t){i[e]&&(l("deactivate",d(o,t)),o=i[e],l("activate",d(o,t)))},s=function(e,t){var n=i.indexOf(o)+e;l(e>0?"next":"prev",d(o,t))&&a(n,t)},c=function(e,t){r[e]=(r[e]||[]).filter(function(e){return e!==t})},l=function(e,t){return(r[e]||[]).reduce(function(e,n){return e&&!1!==n(t)},!0)},d=function(e,t){return(t=t||{}).index=i.indexOf(e),t.slide=e,t},u={on:function(e,t){return(r[e]||(r[e]=[])).push(t),c.bind(null,e,t)},off:c,fire:l,slide:function(e,t){if(!arguments.length)return i.indexOf(o);l("slide",d(i[e],t))&&a(e,t)},next:s.bind(null,1),prev:s.bind(null,-1),parent:n,slides:i};return(t||[]).forEach(function(e){e(u)}),a(0),u}};function t(e){e.parent.classList.add("bespoke-marp-parent"),e.slides.map(e=>e.classList.add("bespoke-marp-slide")),e.on("activate",t=>{e.slides.map(e=>e.classList.remove("bespoke-marp-active")),t.slide.classList.add("bespoke-marp-active")})}function n(e={}){const t=Object.assign({history:!0},e);return e=>{function n(){const t=parseInt(window.location.hash.slice(1),10);Number.isNaN(t)||function(t){const n=Math.max(0,Math.min(t,e.slides.length-1));n!==e.slide()&&e.slide(n)}(t-1)}setTimeout(()=>{n(),e.on("activate",e=>{t.history?window.location.hash=e.index+1:window.location.replace(`#${e.index+1}`)}),window.addEventListener("hashchange",n)},0)}}var i,o=function(e){return function(t){var n="vertical"!==e;document.addEventListener("keydown",function(e){(34==e.which||32==e.which&&!e.shiftKey||n&&39==e.which||!n&&40==e.which)&&t.next(),(33==e.which||32==e.which&&e.shiftKey||n&&37==e.which||!n&&38==e.which)&&t.prev()})}};function r(e={}){const t=Object.assign({interval:200},e);return e=>{o()(e),document.addEventListener("keydown",t=>{35===t.which&&e.slide(e.slides.length-1),36===t.which&&e.slide(0),38===t.which&&e.prev(),40===t.which&&e.next()});let n,r,a=0;e.parent.addEventListener("wheel",o=>{let s=!1;const c=(e,t)=>{e&&(s=s||function(e,t){return function(e,t){const n=t===i.X?"Width":"Height";return e[`client${n}`]<e[`scroll${n}`]}(e,t)&&function(e,t){const{overflow:n}=e,i=e[`overflow${t}`];return"auto"===n||"scroll"===n||"auto"===i||"scroll"===i}(getComputedStyle(e),t)}(e,t)),e&&e.parentElement&&c(e.parentElement,t)};if(0!==o.deltaX&&c(o.target,i.X),0!==o.deltaY&&c(o.target,i.Y),s)return;o.preventDefault(),r&&clearTimeout(r),r=setTimeout(()=>{n=0},t.interval);const l=Date.now()-a<t.interval,d=Math.sqrt(Math.pow(o.deltaX,2)+Math.pow(o.deltaY,2)),u=d<=n;if(n=d,l||u)return;let h;(o.deltaX>0||o.deltaY>0)&&(h="next"),(o.deltaX<0||o.deltaY<0)&&(h="prev"),h&&(e[h](),a=Date.now())})}}!function(e){e.X="X",e.Y="Y"}(i||(i={}));const a=".bespoke-progress-parent > .bespoke-progress-bar";function s(e){e.on("activate",t=>{document.querySelectorAll(a).forEach(n=>{n.style.flexBasis=`${100*t.index/(e.slides.length-1)}%`})})}e.from(document.getElementById("presentation"),[t,function(e=2e3){return t=>{let n;function i(){n&&clearTimeout(n),n=setTimeout(()=>{t.parent.classList.add("bespoke-marp-cursor-inactive")},e),t.parent.classList.remove("bespoke-marp-cursor-inactive")}document.addEventListener("mousedown",i),document.addEventListener("mousemove",i),setTimeout(i,0)}}(),n({history:!1}),r(),s,function(e={}){const t=Object.assign({slope:Math.tan(-35*Math.PI/180),swipeThreshold:30},e);return e=>{let n;const i=e.parent,o=e=>{const t=i.getBoundingClientRect();return{x:e.pageX-(t.left+t.right)/2,y:e.pageY-(t.top+t.bottom)/2}};i.addEventListener("touchstart",e=>{n=1===e.touches.length?o(e.touches[0]):void 0}),i.addEventListener("touchmove",e=>{if(n)if(1===e.touches.length){e.preventDefault();const t=o(e.touches[0]),i=t.x-n.x,r=t.y-n.y;n.delta=Math.sqrt(Math.pow(Math.abs(i),2)+Math.pow(Math.abs(r),2)),n.radian=Math.atan2(i,r)}else n=void 0}),i.addEventListener("touchend",()=>{if(n){if(n.delta&&n.delta>=t.swipeThreshold){let i=n.radian-t.slope;i=(i+Math.PI)%(2*Math.PI)-Math.PI,e[i<0?"next":"prev"]()}n=void 0}})}}()])}();
+</script></body></html>
