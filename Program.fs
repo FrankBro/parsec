@@ -483,23 +483,30 @@ module FParsec =
     open FParsec.Primitives
 
     type Expr =
-        | Variable of int
-        | Call of Expr list
+        | A
+        | B
+        | List of Expr list
 
     let str s = pstring s
 
     type Parser<'a> = Parser<'a, unit>
     let (parseExpr: Parser<Expr>), parseExprImpl = createParserForwardedToRef ()
 
-    let parseVariable = pint32 |>> Variable
-    // let parseCall = parseExpr .>> str " " .>>. parseExpr |>> Call
+    let parseA = str "a" |>> fun _ -> A
+    let parseB = str "b" |>> fun _ -> B
+    let parseValue = parseA <|> parseB
+    let parseList = sepBy1 parseExpr (str " ") |>> List
 
-    // do parseExprImpl := parseCall <|> parseVariable
-    // do parseExprImpl := parseVariable <|> parseCall
-    do parseExprImpl := sepBy1 parseVariable (str " ") |>> fun xs -> match xs with | [x] -> x; | xs -> Call xs
+    // do parseExprImpl := parseList <|> parseA <|> parseB
+    // do parseExprImpl := parseA <|> parseB <|> parseList
+    // do parseExprImpl := parseList <|> parseA <|> parseB 
+    do parseExprImpl := sepBy1 parseValue (str " ") |>> fun xs -> match xs with | [x] -> x; | xs -> List xs
 
     let test1 () =
-        run parseExpr "1 1"
+        run parseExpr "a"
+        |> printfn "%O"
+
+        run parseExpr "a b"
         |> printfn "%O"
 
 [<EntryPoint>]

@@ -563,8 +563,9 @@ let isEmpty = function
 
 ```fsharp
 type Expr =
-    | Variable of int
-    | Call of Expr list
+    | A
+    | B
+    | List of Expr list
 ```
 
 ---
@@ -572,11 +573,12 @@ type Expr =
 # Parsing it
 
 ```fsharp
-let parseExpr = parseCall <|> parseVariable
-let parseVariable = parseInt |>> Variable
-let parseCall = many (parseExpr .>> str " ") |>> Call
+let parseA = str "a" |>> fun _ -> A
+let parseB = str "b" |>> fun _ -> B
+let parseList = sepBy1 parseExpr (str " ") |>> List
+let parseExpr = parseList <|> parseA <|> parseB
 
-"1"
+"a"
 |> run parseExpr
 // Stack overflow
 ```
@@ -586,21 +588,37 @@ let parseCall = many (parseExpr .>> str " ") |>> Call
 # Parsing it ... again
 
 ```fsharp
-let parseExpr = parseVariable <|> parseCall
-let parseVariable = parseInt |>> Variable
-let parseCall = many (parseExpr .>> str " ") |>> Call
+let parseA = str "a" |>> fun _ -> A
+let parseB = str "b" |>> fun _ -> B
+let parseList = sepBy1 parseExpr (str " ") |>> List
+let parseExpr = parseA <|> parseB <|> parseList
 
-"1"
+"a"
 |> run parseExpr
-// Success: Variable 1
+// Success: A
 ```
 
 ---
 
-# Let's try a call
+# Let's try a list
 
 ```fsharp
-"1 1"
+"a b"
+|> run parseExpr
+// Success: A
+```
+
+---
+
+# Ugh, let's reverse again?
+
+```fsharp
+let parseA = str "a" |>> fun _ -> A
+let parseB = str "b" |>> fun _ -> B
+let parseList = sepBy1 parseExpr (str " ") |>> List
+let parseExpr = parseList <|> parseA <|> parseB
+
+"a b"
 |> run parseExpr
 // Stack overflow
 ```
@@ -610,17 +628,23 @@ let parseCall = many (parseExpr .>> str " ") |>> Call
 # Left recursion
 
 ```fsharp
-let parseVariable = parseInt |>> Variable
+let parseA = str "a" |>> fun _ -> A
+let parseB = str "b" |>> fun _ -> B
+let parseValue = parseA <|> parseB
 let parseExpr =
-    sepBy1 parseVariable (str " ")
+    sepBy1 parseValue (str " ")
     |>> fun exprs ->
         match exprs with
-        | [expr] -> expr // Variable
-        | _ -> Call exprs
+        | [expr] -> expr // Value: A or B
+        | _ -> List exprs
 
-"1 1"
+"a"
 |> run parseExpr
-// Success: Call [Variable 1; Variable 1]
+// Success: A
+
+"a b"
+|> run parseExpr
+// Success: List [A; B]
 ```
 
 ---
